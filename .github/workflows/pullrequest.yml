@@ -1,43 +1,58 @@
-name: pullrequest
+name: webapp
 
 on:
-  push:
-    branches: [main]
-
   pull_request:
-    branches: [main]
+    branches:
+      - main
+    types:
+      - opened
 
 jobs:
-  build:
+  setup-node:
+    if: github.event.pull_request.head.repo.fork
+    name: setup-node
     runs-on: ubuntu-latest
+    env:
+      SERV_ADDR: "localhost"
+      PORT: 8080
+      DB_HOST: "localhost"
+      DB_PORT: 3306
+      DB_USER: "root"
+      DB_PASSWORD: "Karan@123"
+      DB_NAME: "assignments_submission"
+      USER_DATA_FILE_PATH: "./opt/users.csv"
+
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_ROOT_PASSWORD: "Karan@123"
+          MYSQL_DATABASE: "assignments_submission"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v3
 
-      - name: Use Node.js
-
-        uses: actions/setup-node@v1
-
-        with:
-          node-version: "14.x"
-
-      - run: yarn --frozen-lockfile
-
-      - run: yarn test:unit
-
-      - run: yarn test:integration:ci
-
-      - name: Checkout Code
-
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-
+      - name: Install Node.js
         uses: actions/setup-node@v2
-
         with:
           node-version: "14"
 
       - name: Install Dependencies
+        run: |
+          npm install
 
-        run: npm install
+      - name: Run Migrations (sequelize-cli)
+        run: |
+          npx sequelize db:migrate
+
+      - name: Integration Tests
+        run: |
+          npm test
