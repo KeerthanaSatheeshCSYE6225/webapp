@@ -9,7 +9,6 @@ on:
 
 jobs:
   setup-node:
-    if: github.event.pull_request.head.repo.fork
     name: setup-node
     runs-on: ubuntu-latest
     env:
