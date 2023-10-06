@@ -4,7 +4,7 @@
   "description": "Node.js, Sequelize, MySQL and REST APIs with Express",
   "main": "server.js",
   "scripts": {
-    "test": "mocha app/test/healthz.test.js"
+    "test": "mocha --exit app/test/healthz.test.js"
   },
   "author": "Keerthana",
   "license": "ISC",
