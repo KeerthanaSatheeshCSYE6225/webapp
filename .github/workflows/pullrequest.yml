@@ -1,113 +1,53 @@
-# name: webapp
+name: CI
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
-#     types:
-#       - opened
-
-# jobs:
-#   setup-node:
-#     if: github.event.pull_request.head.repo.fork
-#     name: setup-node
-#     runs-on: ubuntu-latest
-#     env:
-#       SERV_ADDR: "localhost"
-#       PORT: 8080
-#       DB_HOST: "localhost"
-#       DB_PORT: 3306
-#       DB_USER: "root"
-#       DB_PASSWORD: "Karan@123"
-#       DB_NAME: "assignments_submission"
-#       USER_DATA_FILE_PATH: "./opt/users.csv"
-
-#     services:
-#       mariadb:
-#         image: mariadb
-#         env:
-#           MYSQL_ROOT_PASSWORD: "Karan@123"
-#           MYSQL_DATABASE: "assignments_submission"
-#         ports:
-#           - 3306:3306
-#         options: >-
-#           --health-cmd "mysqladmin ping"
-#           --health-interval 10s
-#           --health-timeout 5s
-#           --health-retries 5
-
-#     steps:
-#       - name: Check out code
-#         uses: actions/checkout@v3
-
-#       - name: Install Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: "14"
-
-#       - name: Install Dependencies
-#         run: |
-#           npm install
-
-#       - name: Run Migrations (sequelize-cli)
-#         run: |
-#           npx sequelize db:migrate
-
-#       - name: Integration Tests
-#         run: |
-#           npm test
-name: Node.js CI with MySQL on Pull Request
-
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["main"]
   pull_request:
-    branches:
-      - main # Change this to your main branch name or specify the branches where you want the workflow to run
+    branches: ["main"]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+
+      - name: Install Dependencies
+        run: npm install
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [14.x] # Change this to your Node.js version
+        node_version: ["8", "10", "12"]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node_version }}
 
-      - name: Setup MySQL
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_HOST: localhost
-          MYSQL_PORT: 3306
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      - name: npm install, build and test
         run: |
-          docker run -d -p 3306:3306 --name mysql-container -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} -e MYSQL_USER=${MYSQL_USER} -e MYSQL_PASSWORD=${MYSQL_PASSWORD} -e MYSQL_DATABASE=myappdb mysql:latest
-          echo "Waiting for MySQL to start..."
-          sleep 30
-          echo "MySQL is up and running."
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run Sequelize migrations
-        run: npx sequelize-cli db:migrate
-
-      - name: Run integration tests
-        env:
-          NODE_ENV: test
-          MYSQL_DATABASE: myappdb
-          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        run: npm test
-
-      - name: Stop MySQL container
-        run: docker stop mysql-container
+          npm install
+          npm run build --if-present
+          npm test
