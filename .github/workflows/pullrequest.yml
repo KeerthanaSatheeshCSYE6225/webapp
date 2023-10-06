@@ -1,62 +1,41 @@
-name: WEBAPP
+name: Webapp
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  integration-test:
     runs-on: ubuntu-latest
     services:
-      mariadb:
-        image: mariadb:latest
+      mysql:
+        image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: Karan@123
-          MYSQL_DATABASE: cloud_db # Specify the name of the database
+          MYSQL_ROOT_PASSWORD: "Karan@123"
+          MYSQL_DATABASE: "cloud_db"
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Setup Node
-        uses: actions/setup-node@v1
+      - name: Run Node.js project
+        uses: actions/setup-node@v3
         with:
-          node-version: "10.x"
+          node-version: 20
 
-      - name: Install Dependencies
-        run: npm install
-  test:
-    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ["12"]
-        os: [ubuntu-latest]
-
-    steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: npm install, build and test
+      - name: Wait for MySQL to be ready
         run: |
-          npm install
-          npm run build --if-present
-          npm test
+          until nc -z -v -w30 localhost 3306
+          do
+            echo "Waiting for MySQL to be ready..."
+            sleep 5
+          done
+
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Run Integration tests
+        run: npm test
