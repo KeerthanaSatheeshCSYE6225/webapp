@@ -1,9 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
-const Assignment = sequelize.define('Assignment', {
+  const Assignment = sequelize.define("Assignment", {
     id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
+      readOnly: true,
+    },
+    user_id: {
+      type: Sequelize.UUID,
+      allowNull: false,
     },
     name: {
       type: Sequelize.STRING,
@@ -33,4 +38,4 @@ const Assignment = sequelize.define('Assignment', {
     },
   });
   return Assignment;
-}
+};
