@@ -42,32 +42,3 @@ exports.getAll = async (req, res) => {
       });
     });
 };
-
-exports.getById = async (req, res) => {
-  try {
-    const account = await db.Account.findByPk(req.params.id);
-    res.json(account);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-exports.update = async (req, res) => {
-  try {
-    const account = await db.Account.findByPk(req.params.id);
-    await account.update(req.body);
-    res.json(account);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-exports.delete = async (req, res) => {
-  try {
-    const account = await db.Account.findByPk(req.params.id);
-    await account.destroy();
-    res.sendStatus(200);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
