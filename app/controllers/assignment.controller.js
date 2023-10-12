@@ -24,7 +24,6 @@ exports.createAssignment = async (req, res) => {
       .json({ message: "Points must be between 1 and 10." });
   }
 
-  // Create the assignment (assuming req.body contains assignment data)
   const assignment = {
     user_id: req.user.id,
     name: req.body.name,
@@ -45,10 +44,17 @@ exports.createAssignment = async (req, res) => {
     });
 };
 
-exports.findById = (req, res) => {
-  Assignment.findByPk(req.params.id).then((data) => {
-    res.send(data);
-  });
+exports.findById = async (req, res) => {
+  try {
+    const data = await Assignment.findByPk(req.params.id);
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send("Assignment not found");
+    }
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 exports.updateAssignment = async (req, res) => {
@@ -56,6 +62,7 @@ exports.updateAssignment = async (req, res) => {
     // Find the assignment by ID
     const id = req.params.id;
 
+    const assignment = await Assignment.findByPk(req.params.id);
     if (!assignment) {
       return res.status(404).json({ message: "Assignment not found." });
     }
@@ -64,7 +71,6 @@ exports.updateAssignment = async (req, res) => {
       return res.status(403).json({ message: "Permission denied." });
     }
 
-    // Update the assignment (assuming req.body contains assignment data)
     await Assignment.update(
       {
         name: req.body.name,
@@ -90,7 +96,6 @@ exports.deleteAssignment = async (req, res) => {
     }
     console.log("userid is ", req.user.id);
 
-    // Only the user who created the assignment can delete it (assuming user_id is associated with the assignment)
     if (assignment.user_id !== req.user.id) {
       return res.status(403).json({ message: "Permission denied." });
     }
