@@ -5,6 +5,9 @@ module.exports = (app) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
+    if (Object.keys(req.query).length > 0) {
+      return res.status(400).send("Query parameters not allowed");
+    }
     // Call the health check controller function
     healthController.healthCheck(req, res);
   });

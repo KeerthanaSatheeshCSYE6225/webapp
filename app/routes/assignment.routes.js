@@ -7,6 +7,9 @@ module.exports = (app) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
+    if (Object.keys(req.query).length > 0) {
+      return res.status(400).send("Query parameters not allowed");
+    }
     console.log("karan");
     assignmentController.getAssignments(req, res);
   });
@@ -19,7 +22,6 @@ module.exports = (app) => {
   });
 
   app.post("/v1/assignments", basicAuth, async (req, res) => {
-    console.log("karan");
     assignmentController.createAssignment(req, res);
   });
 
