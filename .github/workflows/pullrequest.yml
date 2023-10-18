@@ -12,7 +12,12 @@ jobs:
       mysql:
         image: mysql:latest
         env:
+<<<<<<< HEAD
           MYSQL_ROOT_PASSWORD: "Karan@123"
+=======
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+>>>>>>> 847403f (changes check)
           MYSQL_DATABASE: "cloud_db"
         ports:
           - 3306:3306
