@@ -19,4 +19,4 @@ jobs:
 
       - name: Run Packer build
         run: |
-          packer build packer/ami.pfr.hcl
+          packer build ./packer/ami.pkr.hcl
