@@ -1,0 +1,22 @@
+name: Packer AMI Build
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  packer-ami-build:
+    name: Packer AMI Build
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v1
+
+      - name: Run Packer build
+        run: |
+          packer build packer/ami.pfr.hcl
