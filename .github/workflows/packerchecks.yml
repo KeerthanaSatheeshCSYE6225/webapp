@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Packer plugins
         run: |
-          packer plugin install github.com/hashicorp/amazon
+          packer init -upgrade=true .
 
       - name: Set up AWS credentials
         run: |
