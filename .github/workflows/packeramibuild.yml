@@ -25,6 +25,10 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2.0.0
 
+      - name: Build zip
+        working-directory: ${{ github.workspace }}
+        run: zip -r webapp1.zip .
+
       - name: Run Packer build
         run: |
           cd ./packer
