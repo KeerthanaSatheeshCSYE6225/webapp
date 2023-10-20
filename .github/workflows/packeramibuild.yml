@@ -27,4 +27,6 @@ jobs:
 
       - name: Run Packer build
         run: |
+          cd ./packer
+          packer init .
           packer build ./packer/ami.pkr.hcl
