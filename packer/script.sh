@@ -42,7 +42,9 @@
 # Install MySQL
 sudo apt update
 sudo apt install -y mariadb-server
-
+sudo apt install unzip
+# sudo unzip /home/admin/webapp1.zip
+# scp -i /home/admin/webapp1 root@67.205.157.186:/opt/
 # sudo mkdir /home/webapp
 # sudo mv /tmp
 # Create a database

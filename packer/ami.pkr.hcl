@@ -62,15 +62,15 @@ build {
   }
 
 
-  provisioner "file" {
-    source      = "users.csv"
-    destination = "/tmp/users.csv"
-  }
+  // provisioner "file" {
+  //   source      = "/home/runner/work/webapp/webapp/webapp1/users.csv"
+  //   destination = "/opt/users.csv"
+  // }
 
-  provisioner "file" {
-    source      = ["package.json", "package-lock.json"]
-    destination = "/tmp/"
-  }
+  // provisioner "file" {
+  //   source      = ["package.json", "package-lock.json"]
+  //   destination = "/tmp/"
+  // }
 
 
   provisioner "shell" {
