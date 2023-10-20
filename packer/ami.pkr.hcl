@@ -52,7 +52,22 @@ locals {
   script_content = file("/Users/Keerthana/assign4makeup/webapp/packer/script.sh")
 }
 
+// provisioner "file" {
+//   source = ["package.json","package-lock.json"]
+//   destination = "/tmp/"
+// }
 
+
+// provisioner "file" {
+//   source = "users.csv"
+//   destination = "/tmp/users.csv"
+// }
+
+provisioner "file" {
+    source      = "/home/runner/work/webapp/webapp/webapp1.zip"
+    destination = "/home/admin/webapp1.zip"
+  }
+  
 build {
   sources = ["source.amazon-ebs.debian"]
 

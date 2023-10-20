@@ -43,6 +43,8 @@
 sudo apt update
 sudo apt install -y mariadb-server
 
+# sudo mkdir /home/webapp
+# sudo mv /tmp
 # Create a database
 sudo mysql -u root -pKaran@123 <<EOF
 CREATE DATABASE cloud_db;
