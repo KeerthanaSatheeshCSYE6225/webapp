@@ -42,7 +42,7 @@ jobs:
         run: npm install
 
       - name: Run Integration tests
-        env:
+        # env:
           # DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           # DB_USER: keerthana
           # DB_PORT: 33306
