@@ -17,9 +17,9 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2.0.0
 
-      - name: Install Packer plugins
-        run: |
-          packer init -upgrade=true .
+      # - name: Install Packer plugins
+      #   run: |
+      #     packer init -upgrade=true .
 
       - name: Set up AWS credentials
         run: |
