@@ -33,8 +33,7 @@ source "amazon-ebs" "debian" {
   instance_type = "t2.micro"
   region        = "us-east-1"
   ami_users     = ["835050451967", "007647970566"]
-  // ami_users = [var.dev_id, var.demo_id]
-  // ami_users = ]
+ 
   source_ami_filter {
     filters = {
       name                = "debian-12-amd64-*"
