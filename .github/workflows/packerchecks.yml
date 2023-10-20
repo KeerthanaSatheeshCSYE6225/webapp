@@ -1,0 +1,41 @@
+name: Packer Status Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  packer-checks:
+    name: Packer Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v2.0.0
+
+      # - name: Install Packer plugins
+      #   run: |
+      #     packer init -upgrade=true .
+
+      - name: Set up AWS credentials
+        run: |
+          mkdir -p ~/.aws
+          echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Build zip
+        working-directory: ${{ github.workspace }}
+        run: zip -r webapp1.zip .
+
+      - name: Run Packer fmt
+        run: |
+          cd ./packer
+          packer init .
+          packer fmt ./ami.pkr.hcl
+          packer validate ./ami.pkr.hcl
