@@ -12,8 +12,8 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-            MYSQL_ROOT_PASSWORD: "Karan@123"
-            MYSQL_DATABASE: "cloud_db"
+          MYSQL_ROOT_PASSWORD: "Karan@123"
+          MYSQL_DATABASE: "cloud_db"
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -34,9 +34,9 @@ jobs:
             echo "Waiting for MySQL to be ready..."
             sleep 5
           done
-      - name: Grant MySQL Access
-        run: |
-          mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
+      # - name: Grant MySQL Access
+      #   run: |
+      #     mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
 
       - name: Install project dependencies
         run: npm install
