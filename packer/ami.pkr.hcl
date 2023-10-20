@@ -49,7 +49,7 @@ source "amazon-ebs" "debian" {
 }
 
 locals {
-  script_content = file("/Users/Keerthana/assign4makeup/webapp/packer/script.sh")
+  script_content = file("./script.sh")
 }
 
 // provisioner "file" {
