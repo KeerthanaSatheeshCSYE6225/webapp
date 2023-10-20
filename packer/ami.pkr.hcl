@@ -52,18 +52,6 @@ locals {
   script_content = file("./script.sh")
 }
 
-// provisioner "file" {
-//   source = ["package.json","package-lock.json"]
-//   destination = "/tmp/"
-// }
-
-
-// provisioner "file" {
-//   source = "users.csv"
-//   destination = "/tmp/users.csv"
-// }
-
-
 
 build {
   sources = ["source.amazon-ebs.debian"]
@@ -72,6 +60,18 @@ build {
     source      = "/home/runner/work/webapp/webapp/webapp1.zip"
     destination = "/home/admin/webapp1.zip"
   }
+
+
+  provisioner "file" {
+    source      = "users.csv"
+    destination = "/tmp/users.csv"
+  }
+
+  provisioner "file" {
+    source      = ["package.json", "package-lock.json"]
+    destination = "/tmp/"
+  }
+
 
   provisioner "shell" {
     environment_vars = [
