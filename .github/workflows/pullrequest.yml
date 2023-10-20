@@ -32,6 +32,7 @@ jobs:
           until nc -z -v -w30 localhost 3306
           do
             echo "Waiting for MySQL to be ready..."
+            
             sleep 5
           done
       # - name: Grant MySQL Access
@@ -47,4 +48,6 @@ jobs:
           DB_USER: keerthana
           DB_PORT: 33306
           DB_HOST: localhost
-        run: npm test
+        run:
+          mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
+          npm test
