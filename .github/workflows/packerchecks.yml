@@ -37,5 +37,5 @@ jobs:
         run: |
           cd ./packer
           packer init .
-          packer fmt ./packer/ami.pkr.hcl
-          packer validate ./packer/ami.pkr.hcl
+          packer fmt ./ami.pkr.hcl
+          packer validate ./ami.pkr.hcl
