@@ -42,9 +42,9 @@ jobs:
         run: npm install
 
       - name: Run Integration tests
-        # env:
-          # DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          # DB_USER: keerthana
-          # DB_PORT: 33306
-          # DB_HOST: localhost
+        env:
+          DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          DB_USER: keerthana
+          DB_PORT: 33306
+          DB_HOST: localhost
         run: npm test

@@ -63,13 +63,15 @@ locals {
 //   destination = "/tmp/users.csv"
 // }
 
-provisioner "file" {
+
+
+build {
+  sources = ["source.amazon-ebs.debian"]
+
+  provisioner "file" {
     source      = "/home/runner/work/webapp/webapp/webapp1.zip"
     destination = "/home/admin/webapp1.zip"
   }
-  
-build {
-  sources = ["source.amazon-ebs.debian"]
 
   provisioner "shell" {
     environment_vars = [
