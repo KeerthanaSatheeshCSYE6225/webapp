@@ -1,7 +1,6 @@
-# #!/bin/bash
-# sudo apt-get update
-# sudo apt-get upgrade -y
-# sudo apt-get clean
+!/bin/bash
+sudo apt-get update
+sudo apt-get upgrade -y
 
 # sudo apt-get update
 # sudo apt-get -y install mariadb-server
@@ -40,13 +39,10 @@
 #!/bin/bash
 
 # Install MySQL
-sudo apt update
+sudo apt-get install -y nodejs npm unzip
 sudo apt install -y mariadb-server
-sudo apt install unzip
-# sudo unzip /home/admin/webapp1.zip
-# scp -i /home/admin/webapp1 root@67.205.157.186:/opt/
-# sudo mkdir /home/webapp
-# sudo mv /tmp
+
+
 # Create a database
 sudo mysql -u root -pKaran@123 <<EOF
 CREATE DATABASE cloud_db;
@@ -58,5 +54,26 @@ GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'localhost' IDENTIFIED BY 'Kar
 FLUSH PRIVILEGES;
 EOF
 
-# Exit MySQL
-exit
+
+
+sudo apt install unzip
+# sudo unzip /home/admin/webapp1.zip
+# sudo mv -i /home/admin/webapp1 root@67.205.157.186:/opt/
+# sudo mkdir /home/webapp
+# sudo mv /tmp
+
+sudo mkdir /home/admin/webapp
+sudo mv /home/admin/webapp1.zip /home/admin/webapp/
+cd webapp/ || exit
+sudo unzip webapp1.zip
+
+source_path="/home/admin/webapp/users.csv"
+destination_path="/opt/"
+
+source_path="/home/admin/webapp/users.csv"
+destination_path="/opt/"
+
+# Move the file if it exists
+[ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
+
+
