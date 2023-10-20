@@ -37,8 +37,6 @@
 
 
 
-#!/bin/bash
-
 # Install MySQL
 sudo apt update
 sudo apt install -y mariadb-server
