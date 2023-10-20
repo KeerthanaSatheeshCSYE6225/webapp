@@ -29,4 +29,4 @@ jobs:
         run: |
           cd ./packer
           packer init .
-          packer build ./packer/ami.pkr.hcl
+          packer build ./ami.pkr.hcl
