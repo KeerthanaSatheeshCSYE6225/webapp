@@ -27,25 +27,6 @@ variable "subnet_id" {
   default = "subnet-093c4cd4a21589af4"
 }
 
-// # https://www.packer.io/plugins/builders/amazon/ebs
-// source "amazon-ebs" "debian" {
-//   ami_name      = "webapp-api-debian-aws_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
-//   instance_type = "t2.micro"
-//   region        = "us-east-1"
-//   ami_users     = ["835050451967", "007647970566"]
- 
-//   source_ami_filter {
-//     filters = {
-//       name                = "debian-12-amd64-*"
-//       root-device-type    = "ebs"
-//       virtualization-type = "hvm"
-//     }
-//     most_recent = true
-//     owners      = ["amazon"]
-//   }
-
-//   ssh_username = "admin"
-// }
 
 source "amazon-ebs" "debian-mywebapp" {
   ami_users = ["835050451967", "007647970566"]
