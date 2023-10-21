@@ -28,6 +28,7 @@ variable "subnet_id" {
 }
 
 
+
 source "amazon-ebs" "debian-mywebapp" {
   ami_users = ["835050451967", "007647970566"]
   //profile         = "${var.aws_profile}"

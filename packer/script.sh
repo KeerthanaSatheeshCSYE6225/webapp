@@ -66,6 +66,7 @@ sudo mkdir /home/admin/webapp
 sudo mv /home/admin/webapp1.zip /home/admin/webapp/
 cd webapp/ || exit
 sudo unzip webapp1.zip
+sudo npm i
 
 source_path="/home/admin/webapp/users.csv"
 destination_path="/opt/"
