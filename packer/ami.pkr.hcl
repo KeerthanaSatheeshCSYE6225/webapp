@@ -7,7 +7,7 @@ packer {
   }
 }
 
-variable "aws_region"   {
+variable "aws_region" {
   type    = string
   default = "us-east-1"
 }
@@ -35,7 +35,7 @@ source "amazon-ebs" "debian-mywebapp" {
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "Debian AMI for CSYE 6225"
   instance_type   = "t2.micro"
-  region          = "${var.aws_region}"
+  region          = "${var.aws_regions}"
   source_ami      = "${var.source_ami}"
   ssh_username    = "${var.ssh_username}"
   subnet_id       = "${var.subnet_id}"
