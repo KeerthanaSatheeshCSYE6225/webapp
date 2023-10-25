@@ -22,16 +22,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Configuration
+        run: touch .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo DB=${{ secrets.DATABASE }} >> .env
+          echo HOST=${{ secrets.HOST }} >> .env
+          echo DIALECT=${{ secrets.DIALECT }} >> .env
+          echo USER=${{ secrets.USER }} >> .env
+          echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+          echo POOL_MAX=${{ secrets.POOL_MAX }} >> .env
+          echo POOL_MIN=${{ secrets.POOL_MIN }} >> .env
+          echo ACQUIRE=${{ secrets.ACQUIRE }} >> .env
+          echo IDLE=${{ secrets.IDLE }} >> .env
+
       - name: Run Node.js project
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      # - name: Set up environment
-      #   run: |
-      #     cp .env.example .env  # Copy the example file
-      #     echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-      #     echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
 
       - name: Wait for MySQL to be ready
         run: |
@@ -47,19 +54,6 @@ jobs:
 
       - name: Install project dependencies
         run: npm install
-
-      - name: Configuration
-        run: touch .env
-          echo PORT=${{ secrets.PORT }} >> .env
-          echo DB=${{ secrets.DATABASE }} >> .env
-          echo HOST=${{ secrets.HOST }} >> .env
-          echo DIALECT=${{ secrets.DIALECT }} >> .env
-          echo USER=${{ secrets.USER }} >> .env
-          echo PASSWORD=${{ secrets.PASSWORD }} >> .env
-          echo POOL_MAX=${{ secrets.POOL_MAX }} >> .env
-          echo POOL_MIN=${{ secrets.POOL_MIN }} >> .env
-          echo ACQUIRE=${{ secrets.ACQUIRE }} >> .env
-          echo IDLE=${{ secrets.IDLE }} >> .env
 
       - name: Run Integration tests
         run:
