@@ -27,11 +27,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Set up environment
-        run: |
-          cp .env.example .env  # Copy the example file
-          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env    
+      # - name: Set up environment
+      #   run: |
+      #     cp .env.example .env  # Copy the example file
+      #     echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+      #     echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
 
       - name: Wait for MySQL to be ready
         run: |
@@ -47,6 +47,16 @@ jobs:
 
       - name: Install project dependencies
         run: npm install
+
+      - name: configuration
+        run: 
+          touch .env
+            echo port=${{ secrets.PORT }} >> .env
+            echo database=${{ secrets.DATABASE }} >> .env
+            echo host=${{ secrets.HOST }} >> .env
+            echo dialect=${{ secrets.DIALECT }} >> .env
+            echo user=${{ secrets.USER }} >> .env
+            echo password=${{ secrets.PASSWORD }} >> .env  
 
       - name: Run Integration tests
         run:

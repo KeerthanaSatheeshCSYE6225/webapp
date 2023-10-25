@@ -50,6 +50,7 @@ EOF
 
 # Grant user privileges
 sudo mysql -u root -pKaran@123 <<EOF
+ALTER USER 'keerthana'@'localhost' IDENTIFIED BY 'Karan@123'; 
 GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'localhost' IDENTIFIED BY 'Karan@123';
 FLUSH PRIVILEGES;
 EOF
