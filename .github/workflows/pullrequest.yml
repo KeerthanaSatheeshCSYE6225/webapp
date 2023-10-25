@@ -14,6 +14,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: "Karan@123"
           MYSQL_DATABASE: "cloud_db"
+          MYSQL_ROOT_HOST: "%"
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -22,42 +23,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Configuration
-        run: |
-          touch .env
-          echo PORT=${{ secrets.PORT }} >> .env
-          echo DB=${{ secrets.DATABASE }} >> .env
-          echo HOST= 172.18.0.1 >> .env
-          echo DIALECT=${{ secrets.DIALECT }} >> .env
-          echo USER= root >> .env
-          echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+      # - name: Configuration
+      #   run: |
+      #     touch .env
+      #     echo PORT=${{ secrets.PORT }} >> .env
+      #     echo DB=${{ secrets.DATABASE }} >> .env
+      #     echo HOST= 172.18.0.1 >> .env
+      #     echo DIALECT=${{ secrets.DIALECT }} >> .env
+      #     echo USER= root >> .env
+      #     echo PASSWORD=${{ secrets.PASSWORD }} >> .env
 
       - name: Run Node.js project
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: 20
-
-      # - name: Wait for MySQL to be ready
-      #   run: |
-      #     until nc -z -v -w30 localhost 3306
-      #     do
-      #       echo "Waiting for MySQL to be ready..."
-
-      #       sleep 5
-      #     done
-      # - name: Grant MySQL Access
-      #   run: |
-      #     mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
+          node-version: 18
 
       - name: Install project dependencies
-        run: npm install
+        run: npm i
 
       - name: Run Integration tests
-        run:
-          npm test
-          #   DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          #   DB_USER: keerthana
-          #   DB_PORT: 33306
-          #   DB_HOST: localhost
-          #mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
-          #source .env  # Load the environment variables
+        run: npm test
