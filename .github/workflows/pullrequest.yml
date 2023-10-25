@@ -12,8 +12,8 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: "Karan@123"
-          MYSQL_DATABASE: "cloud_db"
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -26,6 +26,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+
+      - name: Set up environment
+        run: |
+          cp .env.example .env  # Copy the example file
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env    
 
       - name: Wait for MySQL to be ready
         run: |
@@ -50,4 +56,5 @@ jobs:
           #   DB_HOST: localhost
           # run:
           #   mysql -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON cloud_db.* TO 'keerthana'@'%' IDENTIFIED BY 'Karan@123'; FLUSH PRIVILEGES;"
+          #source .env  # Load the environment variables
           npm test
