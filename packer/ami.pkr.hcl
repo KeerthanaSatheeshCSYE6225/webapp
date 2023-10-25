@@ -9,24 +9,23 @@ packer {
 
 variable "aws_region" {
   type    = string
-  default = ""
+  default = "us-east-1"
 }
 
 variable "source_ami" {
   type    = string
-  default = "" # Debian 12
+  default = "ami-06db4d78cb1d3bbf9" # Debian 12
 }
 
 variable "ssh_username" {
   type    = string
-  default = ""
+  default = "admin"
 }
 
 variable "subnet_id" {
   type    = string
-  default = ""
+  default = "subnet-093c4cd4a21589af4"
 }
-
 
 
 source "amazon-ebs" "debian-mywebapp" {
