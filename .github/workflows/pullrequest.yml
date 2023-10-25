@@ -48,7 +48,7 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      - name: configuration
+      - name: Configuration
         run: touch .env
           echo port=${{ secrets.PORT }} >> .env
           echo database=${{ secrets.DATABASE }} >> .env
@@ -58,8 +58,8 @@ jobs:
           echo password=${{ secrets.PASSWORD }} >> .env
           echo pool_max=${{ secrets.POOL_MAX }} >> .env
           echo pool_min=${{ secrets.POOL_MIN }} >> .env
-          echo pool_max=${{ secrets.POOL_MAX }} >> .env
-          echo pool_max=${{ secrets.POOL_MAX }} >> .env
+          echo pool_max=${{ secrets.ACQUIRE }} >> .env
+          echo pool_max=${{ secrets.IDLE }} >> .env
 
       - name: Run Integration tests
         run:
