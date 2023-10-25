@@ -7,9 +7,9 @@ module.exports = {
   DB: process.env.DB,
   dialect: process.env.DIALECT,
   pool: {
-    max: process.env.POOL_MAX,
-    min: process.env.POOL_MIN,
-    acquire: process.env.ACQUIRE,
-    idle: process.env.IDLE,
+    max: parseInt(process.env.POOL_MAX),
+    min: parseInt(process.env.POOL_MIN),
+    acquire: parseInt(process.env.ACQUIRE),
+    idle: parseInt(process.env.IDLE),
   },
 };
