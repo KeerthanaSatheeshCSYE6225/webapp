@@ -32,14 +32,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: configuration
-        run: 
-          touch .env
-            echo port=${{ secrets.PORT }} >> .env
-            echo database=${{ secrets.DATABASE }} >> .env
-            echo host=${{ secrets.HOST }} >> .env
-            echo dialect=${{ secrets.DIALECT }} >> .env
-            echo user=${{ secrets.USER }} >> .env
-            echo password=${{ secrets.PASSWORD }} >> .env      
+        run: touch .env
+          echo port=${{ secrets.PORT }} >> .env
+          echo database=${{ secrets.DATABASE }} >> .env
+          echo host=${{ secrets.HOST }} >> .env
+          echo dialect=${{ secrets.DIALECT }} >> .env
+          echo user=${{ secrets.USER }} >> .env
+          echo password=${{ secrets.PASSWORD }} >> .env
 
       - name: Build zip
         working-directory: ${{ github.workspace }}
@@ -49,7 +48,7 @@ jobs:
         run: |
           cd ./packer
           packer init .
-          packer fmt -var "aws_region=${secrets.AWS_REGION}" -var "source_ami=${secrets.SOURCE_AMI}" -var "ssh_username=${secrets.SSH_USERNAME}" -var "secrets.subnet_id=${SUBNET_ID}" ./ami.pkr.hcl
+          packer fmt ./ami.pkr.hcl
           # Check the exit code of the previous command
           if [ $? -ne 0 ]; then
               echo "Error: Packer format failed. Please ensure your configuration file is correctly formatted."
@@ -62,7 +61,3 @@ jobs:
               echo "Error: Packer validation failed. Please check your Packer configuration file for any errors."
               exit 1
           fi
-
-          env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
