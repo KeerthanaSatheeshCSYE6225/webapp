@@ -5,7 +5,9 @@ const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
   try {
-    Assignment.findAll().then((data) => {
+    Assignment.findAll({
+      attributes: { exclude: ["user_id"] }, // Exclude the user_id field
+    }).then((data) => {
       res.send(data);
     });
   } catch (err) {
@@ -46,7 +48,9 @@ exports.createAssignment = async (req, res) => {
 
 exports.findById = async (req, res) => {
   try {
-    const data = await Assignment.findByPk(req.params.id);
+    const data = await Assignment.findByPk(req.params.id, {
+      attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
+    });
     if (data) {
       res.send(data);
     } else {
