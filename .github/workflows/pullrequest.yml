@@ -23,12 +23,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Configuration
-        run: touch .env
+        run: |
+          touch .env
           echo PORT=${{ secrets.PORT }} >> .env
           echo DB=${{ secrets.DATABASE }} >> .env
           echo HOST= 172.18.0.1 >> .env
           echo DIALECT=${{ secrets.DIALECT }} >> .env
-          echo USER=${{ secrets.USER }} >> .env
+          echo USER= root >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
 
       - name: Run Node.js project
