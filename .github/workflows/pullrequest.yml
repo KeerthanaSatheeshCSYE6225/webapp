@@ -13,7 +13,7 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: "Karan@123"
-          DB: "cloud_db"
+          MYSQL_DATABASE: "cloud_db"
           HOST: "127.0.0.1"
           USER: "root"
         ports:
