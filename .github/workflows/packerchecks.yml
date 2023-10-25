@@ -34,4 +34,15 @@ jobs:
           cd ./packer
           packer init .
           packer fmt ./ami.pkr.hcl
+          # Check the exit code of the previous command
+          if [ $? -ne 0 ]; then
+              echo "Error: Packer format failed. Please ensure your configuration file is correctly formatted."
+              exit 1
+          fi
+
           packer validate ./ami.pkr.hcl
+          # Check the exit code of the previous command
+          if [ $? -ne 0 ]; then
+              echo "Error: Packer validation failed. Please check your Packer configuration file for any errors."
+              exit 1
+          fi
