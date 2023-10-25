@@ -34,10 +34,6 @@ jobs:
           echo DIALECT=${{ secrets.DIALECT }} >> .env
           echo USER=${{ secrets.USER }} >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
-          echo POOL_MAX=${{ secrets.POOL_MAX }} >> .env
-          echo POOL_MIN=${{ secrets.POOL_MIN }} >> .env
-          echo ACQUIRE=${{ secrets.ACQUIRE }} >> .env
-          echo IDLE=${{ secrets.IDLE }} >> .env
 
       - name: Run Node.js project
         uses: actions/setup-node@v3
