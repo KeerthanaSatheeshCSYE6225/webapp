@@ -38,34 +38,3 @@ sudo chmod -R 750 /opt/csye6225/webapp
 systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
-
-
-
-# sudo unzip /home/admin/webapp1.zip
-# sudo mv -i /home/admin/webapp1 root@67.205.157.186:/opt/
-# sudo mkdir /home/webapp
-# sudo mv /tmp
-
-# sudo mkdir /home/admin/webapp
-# sudo mv /home/admin/webapp1.zip /home/admin/webapp/
-# cd webapp/ || exit
-
-
-
-
-# sudo unzip webapp1.zip -d /home/ec2-user/webapp
-# cd /home/ec2-user/webapp || exit
-# sudo -u ec2-user npm install
-
-# source_path="/home/ec2-user/webapp/users.csv"
-# destination_path="/opt/"
-
-
-# # Move the file if it exists
-# [ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
-
-
-# echo "setting up and starting the webapp service"
-# sudo cp /home/admin/webapp/packer/webapp.service /etc/systemd/system
-
-
