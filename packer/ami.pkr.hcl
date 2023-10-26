@@ -59,8 +59,8 @@ build {
   sources = ["source.amazon-ebs.debian-mywebapp"]
 
   provisioner "file" {
-    source      = "/home/runner/work/webapp/webapp/webapp.zip"
-    destination = "/home/admin/webapp.zip"
+    source      = "/home/runner/work/webapp/webapp/webapp1.zip"
+    destination = "/home/admin/webapp1.zip"
   }
 
 
