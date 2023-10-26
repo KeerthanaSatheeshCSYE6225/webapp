@@ -25,7 +25,8 @@ sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
 sudo apt install -y nodejs npm unzip
 cd /opt || exit
 mkdir csye6225
-sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
+sudo mv ~/webapp.zip /opt/csye6225/webapp.zip
+
 
 cd /opt/csye6225 || exit
 sudo unzip -o webapp.zip -d webapp
