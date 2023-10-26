@@ -27,11 +27,16 @@ sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
 sudo apt install -y nodejs npm unzip
  
 sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
-sudo mv ~/users.csv /opt/csye6225/users.csv
+
 cd /opt/csye6225 || exit
 sudo unzip -o webapp1.zip -d webapp
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
 cd webapp || exit
+source_path="/opt/csye6225/webapp/users.csv"
+destination_path="/opt/csye6225/"
+
+# Move the file if it exists
+[ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
 touch .env
 sudo npm i
 sudo chown -R csye6225:csye6225 /opt/csye6225/webapp
