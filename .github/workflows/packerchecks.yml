@@ -41,7 +41,7 @@ jobs:
 
       - name: Build zip
         working-directory: ${{ github.workspace }}
-        run: zip -r webapp1.zip .
+        run: zip -r webapp.zip .
 
       - name: Run Packer fmt
         run: |
