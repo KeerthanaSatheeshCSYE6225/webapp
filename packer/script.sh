@@ -27,6 +27,7 @@ cd /opt || exit
 mkdir csye6225
 sudo mv ~/webapp.zip /opt/csye6225/webapp.zip
 
+
 cd /opt/csye6225 || exit
 sudo unzip -o webapp.zip -d webapp
 sudo mv /opt/csye6225/webapp/users.csv /opt/csye6225/users.csv
