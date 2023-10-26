@@ -6,8 +6,9 @@ Wants=cloud-init.service
 [Service]
 Type=simple
 User=csye6225
-ExecStart=/usr/bin/node /home/admin/webapp/server.js
-WorkingDirectory=/home/admin/webapp
+Group=csye6225
+ExecStart=/usr/bin/node /opt/csye6225/webapp/server.js
+WorkingDirectory=/opt/csye6225/webapp
 Restart=on-failure
 RestartSec=5s
 
@@ -15,4 +16,4 @@ Group=csye6225
 Environment=NODE_ENV=production
 
 [Install]
-WantedBy=multi-user.targe
+WantedBy=multi-user.target  
