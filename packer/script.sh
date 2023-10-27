@@ -31,9 +31,8 @@ sudo npm install -g nodemon
  
 sudo mkdir /opt/csye6225/webapp
 sudo mv /home/admin/webapp1.zip /opt/csye6225/webapp/
-cd /opt/csye6225/webapp/
+cd /opt/csye6225/webapp/ || exit
 sudo unzip webapp1.zip
-sudo npm audit fix
 sudo npm install
  
 source_path="/opt/csye6225/webapp/users.csv"
