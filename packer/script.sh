@@ -26,29 +26,19 @@ sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
  
 sudo mkdir /opt/csye6225/webapp
+
 sudo mv ~/webapp1.zip /opt/csye6225/webapp/
-
-
-cd /opt/csye6225/webapp/ || exit
-
-sudo unzip webapp1.zip
-sudo npm audit fix
+cd /opt/csye6225/webapp || exit 
+sudo unzip -o webapp1.zip
 sudo npm install
  
-sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
-
-cd /opt/csye6225 || exit
-sudo unzip -o webapp1.zip -d webapp
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
-cd webapp || exit
 source_path="/opt/csye6225/webapp/users.csv"
 destination_path="/opt/csye6225/"
 
 # Move the file if it exists
 [ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
 
- 
-sudo mv /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
  
 sudo chown -R csye6225:csye6225 /opt/csye6225/webapp/
 sudo chmod -R 750 /opt/csye6225/webapp/
