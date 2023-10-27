@@ -32,6 +32,7 @@ sudo mv ~/webapp1.zip /opt/csye6225/webapp/
 cd /opt/csye6225/webapp/ || exit
 
 sudo unzip webapp1.zip
+sudo npm audit fix
 sudo npm install
  
 sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
