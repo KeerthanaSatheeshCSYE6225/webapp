@@ -22,7 +22,6 @@ EOF
 
 sudo apt-get update
 sudo apt-get upgrade -y
-
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
@@ -31,15 +30,22 @@ sudo npm install -g nodemon
  
 sudo mkdir /opt/csye6225/webapp
 sudo mv /home/admin/webapp1.zip /opt/csye6225/webapp/
-cd /opt/csye6225/webapp/ || exit
+cd /opt/csye6225/webapp/
 sudo unzip webapp1.zip
 sudo npm install
  
+sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
+
+cd /opt/csye6225 || exit
+sudo unzip -o webapp1.zip -d webapp
+sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
+cd webapp || exit
 source_path="/opt/csye6225/webapp/users.csv"
-destination_path="/opt/"
- 
+destination_path="/opt/csye6225/"
+
 # Move the file if it exists
 [ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
+
  
 sudo mv /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
  
@@ -49,5 +55,3 @@ sudo chmod -R 750 /opt/csye6225/webapp/
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
- 
- 
