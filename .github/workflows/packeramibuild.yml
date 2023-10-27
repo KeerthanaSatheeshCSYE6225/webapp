@@ -36,13 +36,15 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: configuration
-        run: touch .env
+        run: |
+          touch .env
           echo PORT=${{ secrets.PORT }} >> .env
           echo DB=${{ secrets.DATABASE }} >> .env
           echo HOST=${{ secrets.HOST }} >> .env
           echo DIALECT=${{ secrets.DIALECT }} >> .env
           echo USER=${{ secrets.USER }} >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+          cat .env
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
