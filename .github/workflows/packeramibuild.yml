@@ -44,6 +44,7 @@ jobs:
           echo DIALECT=${{ secrets.DIALECT }} >> .env
           echo USER=${{ secrets.USER }} >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+          cat .env
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

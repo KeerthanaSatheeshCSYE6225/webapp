@@ -34,7 +34,9 @@ exports.createAssignment = async (req, res) => {
     deadline: req.body.deadline,
   };
 
-  Assignment.create(assignment)
+  Assignment.create(assignment, {
+    attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
+  })
     .then((data) => {
       res.send(data);
     })

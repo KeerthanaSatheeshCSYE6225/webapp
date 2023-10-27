@@ -32,11 +32,13 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
+        readOnly: true,
       },
       assignment_updated: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
+        readOnly: true,
       },
     },
     {
