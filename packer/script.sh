@@ -1,4 +1,5 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo apt-get upgrade -y
 
@@ -20,8 +21,8 @@ GRANT ALL PRIVILEGES ON cloud_db.* TO 'root'@'localhost' IDENTIFIED BY 'Karan@12
 FLUSH PRIVILEGES;
 EOF
 
-sudo apt-get update
-sudo apt-get upgrade -y
+ 
+
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
@@ -55,3 +56,4 @@ sudo chmod -R 750 /opt/csye6225/webapp/
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
+ 
