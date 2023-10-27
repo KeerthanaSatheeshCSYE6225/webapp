@@ -1,4 +1,5 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo apt-get upgrade -y
 
@@ -19,10 +20,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Karan@123';
 GRANT ALL PRIVILEGES ON cloud_db.* TO 'root'@'localhost' IDENTIFIED BY 'Karan@123';
 FLUSH PRIVILEGES;
 EOF
-
-sudo apt-get update
-sudo apt-get upgrade -y
-
+ 
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
@@ -33,6 +31,7 @@ sudo mkdir /opt/csye6225/webapp
 sudo mv /home/admin/webapp1.zip /opt/csye6225/webapp/
 cd /opt/csye6225/webapp/ || exit
 sudo unzip webapp1.zip
+sudo npm audit fix
 sudo npm install
  
 source_path="/opt/csye6225/webapp/users.csv"
@@ -49,5 +48,4 @@ sudo chmod -R 750 /opt/csye6225/webapp/
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
- 
  
