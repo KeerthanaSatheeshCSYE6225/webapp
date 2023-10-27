@@ -8,8 +8,6 @@ sudo apt-get upgrade -y
 sudo apt-get install -y nodejs npm unzip
 sudo npm install -g nodemon
 sudo apt install -y mariadb-server
-sudo systemctl enable mariadb
-sudo systemctl start mariadb
 
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
