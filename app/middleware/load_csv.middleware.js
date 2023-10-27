@@ -11,7 +11,7 @@ const loadCsvMiddleware = async (req, res, next) => {
   // Load the CSV file.
   console.log("Loading CSV data...");
 
-  const csvData = await csv().fromFile("/opt/users.csv");
+  const csvData = await csv().fromFile("/opt/csye6225/users.csv");
   console.log("testing...", csvData);
 
   // Create new users based on the information provided in the CSV file.

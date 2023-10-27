@@ -9,6 +9,7 @@ sudo apt-get install -y nodejs npm unzip
 sudo npm install -g nodemon
 sudo apt install -y mariadb-server
 
+
 # Create a database
 sudo mysql -u root -pKaran@123 <<EOF
 CREATE DATABASE cloud_db;
