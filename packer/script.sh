@@ -6,7 +6,7 @@ sudo apt-get upgrade -y
 
 # Install MySQL
 sudo apt-get install -y nodejs npm unzip
-sudo apt install unzip
+sudo apt install -y mariadb-server
 
 # Create a database
 sudo mysql -u root -pKaran@123 <<EOF
@@ -30,6 +30,7 @@ sudo mv ~/webapp1.zip /opt/csye6225/webapp/
 cd /opt/csye6225/webapp || exit 
 sudo unzip -o webapp1.zip
 touch .env
+
 sudo npm install
  
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
