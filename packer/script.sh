@@ -7,6 +7,21 @@ sudo apt-get upgrade -y
 # Install MySQL
 sudo apt-get install -y nodejs npm unzip
 sudo npm install -g nodemon
+sudo apt install -y mariadb-server
+
+# Create a database
+sudo mysql -u root -pKaran@123 <<EOF
+CREATE DATABASE cloud_db;
+EOF
+
+# Grant user privileges
+sudo mysql -u root -pKaran@123 <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Karan@123'; 
+GRANT ALL PRIVILEGES ON cloud_db.* TO 'root'@'localhost' IDENTIFIED BY 'Karan@123';
+FLUSH PRIVILEGES;
+EOF
+ 
+
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
@@ -16,6 +31,7 @@ sudo mkdir /opt/csye6225/webapp
 sudo mv ~/webapp1.zip /opt/csye6225/webapp/
 cd /opt/csye6225/webapp || exit 
 sudo unzip -o webapp1.zip
+
 sudo npm install
  
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
