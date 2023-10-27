@@ -6,19 +6,7 @@ sudo apt-get upgrade -y
 
 # Install MySQL
 sudo apt-get install -y nodejs npm unzip
-sudo apt install -y mariadb-server
-# Create a database
-sudo mysql -u root -pKaran@123 <<EOF
-CREATE DATABASE cloud_db;
-EOF
-
-# Grant user privileges
-sudo mysql -u root -pKaran@123 <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'Karan@123'; 
-GRANT ALL PRIVILEGES ON cloud_db.* TO 'root'@'localhost' IDENTIFIED BY 'Karan@123';
-FLUSH PRIVILEGES;
-EOF
- 
+sudo npm install -g nodemon
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
