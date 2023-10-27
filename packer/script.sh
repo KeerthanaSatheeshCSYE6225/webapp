@@ -22,8 +22,6 @@ EOF
 
 sudo apt-get update
 sudo apt-get upgrade -y
-
-
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
@@ -34,7 +32,6 @@ sudo mkdir /opt/csye6225/webapp
 sudo mv /home/admin/webapp1.zip /opt/csye6225/webapp/
 cd /opt/csye6225/webapp/
 sudo unzip webapp1.zip
-sudo npm audit fix
 sudo npm install
  
 sudo mv ~/webapp1.zip /opt/csye6225/webapp1.zip
@@ -58,6 +55,3 @@ sudo chmod -R 750 /opt/csye6225/webapp/
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
- 
-
- 
