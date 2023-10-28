@@ -3,6 +3,7 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo apt-get upgrade -y
 
+
 # Install MySQL
 sudo apt-get install -y nodejs npm unzip
 sudo npm install -g nodemon

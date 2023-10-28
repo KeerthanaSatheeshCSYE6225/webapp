@@ -34,18 +34,17 @@ exports.createAssignment = async (req, res) => {
     deadline: req.body.deadline,
   };
 
-  Assignment.create(assignment, {
-    attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Tutorial.",
-      });
+  try {
+    const data = await Assignment.create(assignment, {
+      attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
     });
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while creating the Assignment.",
+    });
+  }
 };
 
 exports.findById = async (req, res) => {
