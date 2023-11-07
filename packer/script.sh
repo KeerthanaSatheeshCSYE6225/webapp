@@ -3,10 +3,17 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo apt-get upgrade -y
 
+# Install MySQL
+sudo apt-get install -y nodejs npm unzip
+sudo npm install -g nodemon
+
+sudo apt install -y mariadb-server
+
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
- 
+sudo mkdir -p /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl/
+
 sudo mkdir /opt/csye6225/webapp
 
 sudo mv ~/webapp1.zip /opt/csye6225/webapp/
