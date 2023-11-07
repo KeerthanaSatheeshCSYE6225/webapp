@@ -1,7 +1,6 @@
-const winston = require("winston");
-const logger = require("../logger/logger"); // Update the path to your logger file
-
 const db = require("../models");
+const logger = require("../logger/logger");
+// Define the Assignment model
 const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
@@ -25,6 +24,7 @@ exports.getAssignments = async (req, res) => {
 };
 
 exports.createAssignment = async (req, res) => {
+  // Check if points are between 1 and 10
   if (req.body.points < 1 || req.body.points > 10) {
     logger.log("error", "Invalid points entered.");
     return res
@@ -57,7 +57,6 @@ exports.createAssignment = async (req, res) => {
 };
 
 exports.findById = async (req, res) => {
-  logger.info("fetch assignment by id get");
   try {
     const data = await Assignment.findByPk(req.params.id, {
       attributes: { exclude: ["user_id"] },
