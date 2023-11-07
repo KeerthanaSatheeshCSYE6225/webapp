@@ -22,7 +22,6 @@ sudo unzip -o webapp1.zip
 sudo npm install
  
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
-cd webapp || exit
 source_path="/opt/csye6225/webapp/users.csv"
 destination_path="/opt/csye6225/"
 
