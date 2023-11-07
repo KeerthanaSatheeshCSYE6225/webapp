@@ -45,5 +45,9 @@ sudo systemctl enable webapp
 
 sudo systemctl start webapp
 
-sudo systemctl restart amazon-cloudwatch-agent
+sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb -P /tmp/
+sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
+sudo cp /opt/csye6225/webapp/cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl/
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl/cloudwatch-config.json
 
+sudo systemctl restart amazon-cloudwatch-agent
