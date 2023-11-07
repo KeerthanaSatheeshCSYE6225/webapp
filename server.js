@@ -5,7 +5,7 @@ const loadCsvMiddleware = require("./app/middleware/load_csv.middleware");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:8080",
 };
 
 app.use(cors(corsOptions));

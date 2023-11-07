@@ -8,6 +8,7 @@ async function basicAuth(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
+    res.set("WWW-Authenticate", 'Basic realm="Secure Area"');
     return res.status(401).send("Unauthorized");
   }
 
