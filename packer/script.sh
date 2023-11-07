@@ -22,16 +22,16 @@ sudo unzip -o webapp1.zip
 sudo npm install
  
 sudo cp /opt/csye6225/webapp/webapp.service /etc/systemd/system/webapp.service
+cd webapp || exit
 source_path="/opt/csye6225/webapp/users.csv"
 destination_path="/opt/csye6225/"
 
 # Move the file if it exists
 [ -e "$source_path" ] && sudo mv "$source_path" "$destination_path" && echo "File 'users.csv' moved to '$destination_path'"
-
- 
-sudo chown -R csye6225:csye6225 /opt/csye6225/webapp/
-sudo chmod -R 750 /opt/csye6225/webapp/
- 
+sudo touch .env
+sudo npm i
+sudo chown -R csye6225:csye6225 /opt/csye6225/webapp
+sudo chmod -R 750 /opt/csye6225/webapp
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
