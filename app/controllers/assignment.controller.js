@@ -5,6 +5,7 @@ const db = require("../models");
 const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
+  logger.info("fetch all assignments get");
   try {
     Assignment.findAll({
       attributes: { exclude: ["user_id"] },
@@ -53,6 +54,7 @@ exports.createAssignment = async (req, res) => {
 };
 
 exports.findById = async (req, res) => {
+  logger.info("fetch assignment by id get");
   try {
     const data = await Assignment.findByPk(req.params.id, {
       attributes: { exclude: ["user_id"] },
@@ -71,6 +73,7 @@ exports.findById = async (req, res) => {
 };
 
 exports.updateAssignment = async (req, res) => {
+  logger.info("upadate assignment by id put");
   try {
     const id = req.params.id;
     const assignment = await Assignment.findByPk(req.params.id);
@@ -102,6 +105,7 @@ exports.updateAssignment = async (req, res) => {
 };
 
 exports.deleteAssignment = async (req, res) => {
+  logger.info("delete assignment by id delete");
   try {
     const assignment = await Assignment.findByPk(req.params.id);
 
