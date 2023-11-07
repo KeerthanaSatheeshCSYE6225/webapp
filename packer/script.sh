@@ -12,7 +12,8 @@ sudo apt install -y mariadb-server
 sudo groupadd csye6225
 sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
  
- 
+sudo mkdir -p /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl/
+
 sudo mkdir /opt/csye6225/webapp
 
 sudo mv ~/webapp1.zip /opt/csye6225/webapp/
