@@ -1,6 +1,7 @@
 module.exports = (app) => {
   const assignmentController = require("../controllers/assignment.controller.js");
   const { basicAuth } = require("../middleware/authenticateToken");
+
   const { getStatsD, endStatsD } = require("../statsd/statsd");
   //app.use(basicAuth);
   app.get("/v1/assignments", [basicAuth, getStatsD()], async (req, res) => {
@@ -38,5 +39,7 @@ module.exports = (app) => {
       assignmentController.deleteAssignment(req, res);
     }
   );
+
   app.use(endStatsD());
+
 };
