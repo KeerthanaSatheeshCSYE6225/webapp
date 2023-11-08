@@ -4,6 +4,7 @@ const logger = require("../logger/logger");
 const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
+  logger.info("fetch all assignments get");
   try {
     const assignments = await Assignment.findAll({
       attributes: { exclude: ["user_id"] }, // Exclude the user_id field
@@ -20,6 +21,7 @@ exports.getAssignments = async (req, res) => {
 };
 
 exports.createAssignment = async (req, res) => {
+  logger.info("create assignment post");
   // Check if points are between 1 and 10
   if (
     !Number.isInteger(points) ||
@@ -58,6 +60,7 @@ exports.createAssignment = async (req, res) => {
 };
 
 exports.findById = async (req, res) => {
+  logger.info("fetch assignment by id get");
   try {
     const assignment = await Assignment.findByPk(req.params.id, {
       attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
@@ -80,6 +83,7 @@ exports.findById = async (req, res) => {
 };
 
 exports.updateAssignment = async (req, res) => {
+  logger.info("upadate assignment by id put");
   try {
     // Find the assignment by ID
     const id = req.params.id;

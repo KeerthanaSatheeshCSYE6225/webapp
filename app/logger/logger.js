@@ -21,3 +21,4 @@ logger.log("error", "This is an error message.");
 
 // Export the logger
 module.exports = logger;
+
