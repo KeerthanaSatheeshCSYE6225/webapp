@@ -4,7 +4,6 @@ const logger = require("../logger/logger");
 const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
-  logger.info("fetch all assignments get");
   try {
     Assignment.findAll({
       attributes: { exclude: ["user_id"] },
@@ -75,7 +74,6 @@ exports.findById = async (req, res) => {
 };
 
 exports.updateAssignment = async (req, res) => {
-  logger.info("upadate assignment by id put");
   try {
     const id = req.params.id;
     const assignment = await Assignment.findByPk(req.params.id);
