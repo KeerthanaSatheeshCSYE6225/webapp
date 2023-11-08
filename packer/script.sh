@@ -44,6 +44,5 @@ sudo systemctl enable webapp
 
 sudo systemctl start webapp
 
-
 sudo systemctl restart amazon-cloudwatch-agent
 
