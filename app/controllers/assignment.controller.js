@@ -1,6 +1,7 @@
+const winston = require("winston");
+const logger = require("../logger/logger"); // Update the path to your logger file
+
 const db = require("../models");
-const logger = require("../logger/logger");
-// Define the Assignment model
 const Assignment = db.assignment;
 
 exports.getAssignments = async (req, res) => {
@@ -11,13 +12,11 @@ exports.getAssignments = async (req, res) => {
       logger.info("Retrieved assignments successfully.");
       res.send(data);
     });
-
-    logger.info("Successfully fetched all assignments");
-    res.send(assignments);
   } catch (err) {
     logger.error("Error retrieving assignments.");
     res.status(500).send({
-      message: "Some error occurred while retrieving assignments.",
+      message:
+        err.message || "Some error occurred while retrieving assignments.",
     });
   }
 };
@@ -30,9 +29,7 @@ exports.createAssignment = async (req, res) => {
       .status(400)
       .json({ message: "Points must be between 1 and 10." });
   }
-  if (!isNaN(assignment.name) || typeof assignment.name !== "string") {
-    throw new Error("Invalid name value: " + assignment.name);
-  }
+
   const assignment = {
     user_id: req.user.id,
     name: req.body.name,
@@ -50,7 +47,8 @@ exports.createAssignment = async (req, res) => {
   } catch (err) {
     logger.error("Error creating assignment.");
     res.status(500).send({
-      message: "Some error occurred while creating the Assignment.",
+      message:
+        err.message || "Some error occurred while creating the Assignment.",
     });
   }
 };
@@ -86,20 +84,6 @@ exports.updateAssignment = async (req, res) => {
       return res.status(403).json({ message: "Permission denied." });
     }
 
-    if (
-      !Number.isInteger(points) ||
-      req.body.points < 1 ||
-      req.body.points > 10
-    ) {
-      logger.error("Invalid points value:", req.body.points);
-      return res
-        .status(400)
-        .json({ message: "Points must be between 1 and 10." });
-    }
-    if (!isNaN(assignment.name) || typeof assignment.name !== "string") {
-      throw new Error("Invalid name value: " + assignment.name);
-    }
-
     await Assignment.update(
       {
         name: req.body.name,
@@ -119,11 +103,8 @@ exports.updateAssignment = async (req, res) => {
 };
 
 exports.deleteAssignment = async (req, res) => {
-  logger.info("delete assignment by id delete");
   try {
-    // Find the assignment by ID
-    const id = req.params.id;
-    const assignment = await Assignment.findByPk(id);
+    const assignment = await Assignment.findByPk(req.params.id);
 
     if (!assignment) {
       logger.error("Assignment not found for deletion.");
