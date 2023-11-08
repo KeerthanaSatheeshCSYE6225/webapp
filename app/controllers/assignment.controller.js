@@ -13,9 +13,6 @@ exports.getAssignments = async (req, res) => {
       logger.info("Retrieved assignments successfully.");
       res.send(data);
     });
-
-    logger.info("Successfully fetched all assignments");
-    res.send(assignments);
   } catch (err) {
     logger.error("Error retrieving assignments.");
     res.status(500).send({
@@ -25,15 +22,6 @@ exports.getAssignments = async (req, res) => {
 };
 
 exports.createAssignment = async (req, res) => {
-  if (req.body.points < 1 || req.body.points > 10) {
-    logger.log("error", "Invalid points entered.");
-    return res
-      .status(400)
-      .json({ message: "Points must be between 1 and 10." });
-  }
-  if (!isNaN(assignment.name) || typeof assignment.name !== "string") {
-    throw new Error("Invalid name value: " + assignment.name);
-  }
   const assignment = {
     user_id: req.user.id,
     name: req.body.name,
@@ -41,6 +29,27 @@ exports.createAssignment = async (req, res) => {
     num_of_attemps: req.body.num_of_attemps,
     deadline: req.body.deadline,
   };
+
+  if (req.body.points < 1 || req.body.points > 10) {
+    logger.log("error", "Invalid points entered.");
+    return res
+      .status(400)
+      .json({ message: "Points must be between 1 and 10." });
+  }
+  if (!isNaN(req.body.name) || typeof req.body.name !== "string") {
+    throw new Error("Invalid name value: " + assignment.name);
+  }
+
+  if (
+    !Number.isInteger(req.body.num_of_attemps) ||
+    !Number.isFinite(req.body.num_of_attemps) ||
+    num_of_attemps < 1
+  ) {
+    logger.error("Invalid num_of_attemps value:", num_of_attemps);
+    return res
+      .status(400)
+      .json({ message: "num_of_attemps must be a positive whole number" });
+  }
 
   try {
     const data = await Assignment.create(assignment, {
@@ -50,6 +59,7 @@ exports.createAssignment = async (req, res) => {
     res.send(data);
   } catch (err) {
     logger.error("Error creating assignment.");
+    console.error("Error creating assignment:", err.message);
     res.status(500).send({
       message: "Some error occurred while creating the Assignment.",
     });
@@ -76,7 +86,7 @@ exports.findById = async (req, res) => {
 };
 
 exports.updateAssignment = async (req, res) => {
-  logger.info("upadate assignment by id put");
+  logger.info("update assignment by id put");
   try {
     const id = req.params.id;
     const assignment = await Assignment.findByPk(req.params.id);
@@ -89,25 +99,36 @@ exports.updateAssignment = async (req, res) => {
       return res.status(403).json({ message: "Permission denied." });
     }
 
+    const points = req.body.points; // Define the 'points' variable
+    const name = req.body.name;
+    const num_of_attempts = req.body.num_of_attemps; // Define the 'num_of_attemps' variable
+
+    if (!Number.isInteger(points) || points < 1 || points > 10) {
+      logger.error("Invalid points value:", points);
+      return res.status(400).json({
+        message: "Points must be between 1 and 10 and proper integer",
+      });
+    }
+
+    if (!isNaN(name) || typeof name !== "string") {
+      throw new Error("Invalid name value: " + name);
+    }
     if (
-      !Number.isInteger(points) ||
-      req.body.points < 1 ||
-      req.body.points > 10
+      !Number.isInteger(num_of_attempts) ||
+      !Number.isFinite(num_of_attempts) ||
+      num_of_attemps < 1
     ) {
-      logger.error("Invalid points value:", req.body.points);
+      logger.error("Invalid num_of_attemps value:", num_of_attemps);
       return res
         .status(400)
-        .json({ message: "Points must be between 1 and 10." });
-    }
-    if (!isNaN(assignment.name) || typeof assignment.name !== "string") {
-      throw new Error("Invalid name value: " + assignment.name);
+        .json({ message: "num_of_attemps must be a positive whole number" });
     }
 
     await Assignment.update(
       {
-        name: req.body.name,
-        points: req.body.points,
-        num_of_attemps: req.body.num_of_attemps,
+        name: name,
+        points: points, // Use the defined 'points' variable here
+        num_of_attemps: num_of_attempts,
         deadline: req.body.deadline,
       },
       { where: { id: req.params.id } }
