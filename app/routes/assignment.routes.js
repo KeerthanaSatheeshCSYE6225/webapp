@@ -3,6 +3,7 @@ module.exports = (app) => {
   const { basicAuth } = require("../middleware/authenticateToken");
   const { getStatsD } = require("../statsd/statsd");
   //app.use(basicAuth);
+  
   app.get("/v1/assignments", [basicAuth, getStatsD()], async (req, res) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
