@@ -1,1 +1,58 @@
 
+info: This is an informational message. {"timestamp":"2023-11-08T22:34:43.942Z"}
+error: This is an error message. {"timestamp":"2023-11-08T22:34:43.942Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T22:37:24.284Z"}
+error: This is an error message. {"timestamp":"2023-11-08T22:37:24.285Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:03:57.288Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:03:57.289Z"}
+info: fetch all assignments get {"timestamp":"2023-11-08T23:04:12.890Z"}
+info: Successfully fetched all assignments {"timestamp":"2023-11-08T23:04:12.891Z"}
+error: Error retrieving assignments. {"timestamp":"2023-11-08T23:04:12.891Z"}
+info: Retrieved assignments successfully. {"timestamp":"2023-11-08T23:04:12.896Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:06:48.739Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:06:48.740Z"}
+info: fetch all assignments get {"timestamp":"2023-11-08T23:06:52.509Z"}
+info: Retrieved assignments successfully. {"timestamp":"2023-11-08T23:06:52.512Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:08:59.968Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:08:59.969Z"}
+error: Error creating assignment. {"timestamp":"2023-11-08T23:09:03.832Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:10:27.305Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:10:27.306Z"}
+error: Error creating assignment. {"timestamp":"2023-11-08T23:10:30.948Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:15:44.394Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:15:44.395Z"}
+info: Assignment created successfully. {"timestamp":"2023-11-08T23:15:54.857Z"}
+info: fetch all assignments get {"timestamp":"2023-11-08T23:16:03.441Z"}
+info: Retrieved assignments successfully. {"timestamp":"2023-11-08T23:16:03.443Z"}
+info: fetch assignment by id get {"timestamp":"2023-11-08T23:16:12.560Z"}
+info: Assignment found by ID. {"timestamp":"2023-11-08T23:16:12.562Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:16:27.488Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:16:27.489Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:17:44.147Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:17:44.149Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:17:50.168Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:17:50.170Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:17:52.227Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:17:52.231Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:17:57.920Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:17:57.922Z"}
+info: fetch assignment by id get {"timestamp":"2023-11-08T23:18:12.296Z"}
+info: Assignment found by ID. {"timestamp":"2023-11-08T23:18:12.298Z"}
+info: upadate assignment by id put {"timestamp":"2023-11-08T23:18:58.890Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:18:58.892Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:20:47.625Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:20:47.626Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:20:53.792Z"}
+error: Invalid points value: {"timestamp":"2023-11-08T23:20:53.795Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:21:03.312Z"}
+error: Invalid points value: {"timestamp":"2023-11-08T23:21:03.315Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:21:39.081Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:21:39.087Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:21:52.606Z"}
+error: Error updating assignment. {"timestamp":"2023-11-08T23:21:52.608Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:22:04.049Z"}
+info: Assignment updated successfully. {"timestamp":"2023-11-08T23:22:04.058Z"}
+info: This is an informational message. {"timestamp":"2023-11-08T23:25:32.389Z"}
+error: This is an error message. {"timestamp":"2023-11-08T23:25:32.389Z"}
+info: update assignment by id put {"timestamp":"2023-11-08T23:25:36.751Z"}
+error: Invalid num_of_attemps value: {"timestamp":"2023-11-08T23:25:36.753Z"}

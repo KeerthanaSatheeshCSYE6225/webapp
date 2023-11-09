@@ -1,6 +1,8 @@
 module.exports = (app) => {
   const healthController = require("../controllers/health.controller.js");
-  const { getStatsD, endStatsD } = require("../statsd/statsd");
+
+  const { getStatsD } = require("../statsd/statsd");
+
 
   app.get("/healthz", getStatsD(), (req, res) => {
     if (Object.keys(req.body).length > 0) {

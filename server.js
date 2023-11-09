@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const loadCsvMiddleware = require("./app/middleware/load_csv.middleware");
 const app = express();
 
 var corsOptions = {

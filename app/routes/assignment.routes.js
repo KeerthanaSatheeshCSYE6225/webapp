@@ -2,7 +2,8 @@ module.exports = (app) => {
   const assignmentController = require("../controllers/assignment.controller.js");
   const { basicAuth } = require("../middleware/authenticateToken");
 
-  const { getStatsD, endStatsD } = require("../statsd/statsd");
+  const { getStatsD } = require("../statsd/statsd");
+
   //app.use(basicAuth);
   app.get("/v1/assignments", [basicAuth, getStatsD()], async (req, res) => {
     if (Object.keys(req.body).length > 0) {
