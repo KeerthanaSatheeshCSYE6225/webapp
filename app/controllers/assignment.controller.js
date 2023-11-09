@@ -51,19 +51,18 @@ exports.createAssignment = async (req, res) => {
       .json({ message: "num_of_attemps must be a positive whole number" });
   }
 
-  try {
-    const data = await Assignment.create(assignment, {
-      attributes: { exclude: ["user_id"] },
+  Assignment.create(assignment, { attributes: { exclude: ["user_id"] } })
+    .then((data) => {
+      logger.info("Assignment created successfully.");
+      res.send(data);
+    })
+    .catch((err) => {
+      logger.error("Error creating assignment.");
+      console.error("Error creating assignment:", err.message);
+      res.status(500).send({
+        message: "Some error occurred while creating the Assignment.",
+      });
     });
-    logger.info("Assignment created successfully.");
-    res.send(data);
-  } catch (err) {
-    logger.error("Error creating assignment.");
-    console.error("Error creating assignment:", err.message);
-    res.status(500).send({
-      message: "Some error occurred while creating the Assignment.",
-    });
-  }
 };
 
 exports.findById = async (req, res) => {
@@ -87,59 +86,59 @@ exports.findById = async (req, res) => {
 
 exports.updateAssignment = async (req, res) => {
   logger.info("update assignment by id put");
-  try {
-    const id = req.params.id;
-    const assignment = await Assignment.findByPk(req.params.id);
-    if (!assignment) {
-      logger.error("Assignment not found for updating.");
-      return res.status(404).json({ message: "Assignment not found." });
-    }
-    if (assignment.user_id !== req.user.id) {
-      logger.error("Permission denied for updating assignment.");
-      return res.status(403).json({ message: "Permission denied." });
-    }
+  const id = req.params.id;
+  const assignment = await Assignment.findByPk(req.params.id);
+  if (!assignment) {
+    logger.error("Assignment not found for updating.");
+    return res.status(404).json({ message: "Assignment not found." });
+  }
+  if (assignment.user_id !== req.user.id) {
+    logger.error("Permission denied for updating assignment.");
+    return res.status(403).json({ message: "Permission denied." });
+  }
 
-    const points = req.body.points; // Define the 'points' variable
-    const name = req.body.name;
-    const num_of_attempts = req.body.num_of_attemps; // Define the 'num_of_attemps' variable
+  const points = req.body.points; // Define the 'points' variable
+  const name = req.body.name;
+  const num_of_attempts = req.body.num_of_attemps; // Define the 'num_of_attemps' variable
 
-    if (!Number.isInteger(points) || points < 1 || points > 10) {
-      logger.error("Invalid points value:", points);
-      return res.status(400).json({
-        message: "Points must be between 1 and 10 and proper integer",
-      });
-    }
+  if (!Number.isInteger(points) || points < 1 || points > 10) {
+    logger.error("Invalid points value:", points);
+    return res.status(400).json({
+      message: "Points must be between 1 and 10 and proper integer",
+    });
+  }
 
-    if (!isNaN(name) || typeof name !== "string") {
-      throw new Error("Invalid name value: " + name);
-    }
-    if (
-      !Number.isInteger(num_of_attempts) ||
-      !Number.isFinite(num_of_attempts) ||
-      num_of_attemps < 1
-    ) {
-      logger.error("Invalid num_of_attemps value:", num_of_attemps);
-      return res
-        .status(400)
-        .json({ message: "num_of_attemps must be a positive whole number" });
-    }
+  if (!isNaN(name) || typeof name !== "string") {
+    throw new Error("Invalid name value: " + name);
+  }
+  if (
+    !Number.isInteger(num_of_attempts) ||
+    !Number.isFinite(num_of_attempts) ||
+    num_of_attemps < 1
+  ) {
+    logger.error("Invalid num_of_attemps value:", num_of_attemps);
+    return res
+      .status(400)
+      .json({ message: "num_of_attemps must be a positive whole number" });
+  }
 
-    await Assignment.update(
-      {
-        name: name,
-        points: points, // Use the defined 'points' variable here
-        num_of_attemps: num_of_attempts,
-        deadline: req.body.deadline,
-      },
-      { where: { id: req.params.id } }
-    ).then(() => {
+  Assignment.update(
+    {
+      name: name,
+      points: points, // Use the defined 'points' variable here
+      num_of_attemps: num_of_attempts,
+      deadline: req.body.deadline,
+    },
+    { where: { id: req.params.id } }
+  )
+    .then(() => {
       logger.info("Assignment updated successfully.");
       res.status(200).send("Updated successfully a customer with id = " + id);
+    })
+    .catch((err) => {
+      logger.error("Error updating assignment.");
+      res.status(400).json({ message: err.message });
     });
-  } catch (err) {
-    logger.error("Error updating assignment.");
-    res.status(400).json({ message: err.message });
-  }
 };
 
 exports.deleteAssignment = async (req, res) => {
