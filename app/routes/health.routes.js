@@ -1,8 +1,7 @@
 module.exports = (app) => {
   const healthController = require("../controllers/health.controller.js");
-  const { getStatsD } = require("../statsd/statsd");
 
-  app.get("/healthz", getStatsD(), (req, res) => {
+  app.get("/healthz", (req, res) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
