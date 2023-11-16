@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      num_of_attempts: {
+      num_of_attemps: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
