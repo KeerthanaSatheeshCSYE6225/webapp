@@ -22,53 +22,35 @@ exports.getAssignments = async (req, res) => {
 };
 
 exports.createAssignment = async (req, res) => {
-  const { name, points, num_of_attempts, deadline } = req.body;
-
-  const allowedFields = ["name", "points", "num_of_attempts", "deadline"];
-  const extraFields = Object.keys(req.body).filter(
-    (key) => !allowedFields.includes(key)
-  );
-
-  if (extraFields.length > 0) {
+  if (req.body.points < 1 || req.body.points > 10) {
+    logger.error("Points must be between 1 and 10.");
     return res
       .status(400)
-      .json({ msg: `Extra fields not allowed: ${extraFields.join(", ")}` });
-  } else if (!name || typeof name !== "string") {
-    return res
-      .status(400)
-      .json({ msg: "Name field required and need to be a String format" });
-  } else if (!points || typeof points !== "number" || points % 1 !== 0) {
-    return res
-      .status(400)
-      .json({ msg: "Points field required and need to be in integer format" });
-  } else if (
-    !num_of_attempts ||
-    typeof num_of_attempts !== "number" ||
-    num_of_attempts % 1 !== 0
-  ) {
-    return res
-      .status(400)
-      .json({ msg: "Attempt field required and need to be in integer format" });
-  } else if (!deadline || !isValidDeadlineFormat(deadline)) {
-    return res.status(400).json({
-      msg: 'Invalid deadline format. Please use the format "2023-10-09T23:42:18.000Z"',
-    });
+      .json({ message: "Points must be between 1 and 10." });
   }
 
-  try {
-    const assignObj = await Assignment.create({
-      name,
-      points,
-      num_of_attempts,
-      deadline,
-      userId: req.userId,
+  const assignment = {
+    user_id: req.user.id,
+    name: req.body.name,
+    points: req.body.points,
+    num_of_attemps: req.body.num_of_attemps,
+    deadline: req.body.deadline,
+  };
+
+  Assignment.create(assignment, {
+    attributes: { exclude: ["user_id"] }, // Exclude the 'user_id' field from the response
+  })
+    .then((data) => {
+      logger.info("Assignment created successfully.");
+      res.send(data);
+    })
+    .catch((err) => {
+      logger.error("Error creating assignment:", err.message);
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Assignment.",
+      });
     });
-    logger.log("info", "Assignment created successfully");
-    res.status(201).send(assignObj);
-  } catch (error) {
-    logger.log("error", "Error creating assignment");
-    res.status(400).json(error.message);
-  }
 };
 
 exports.findById = async (req, res) => {
@@ -91,71 +73,39 @@ exports.findById = async (req, res) => {
 };
 
 exports.updateAssignment = async (req, res) => {
-  logger.log("info", "Update assignment request received");
-  const id = req.params.id;
-  const { name, points, num_of_attempts, deadline } = req.body;
+  try {
+    logger.info("Finding assignment by ID...");
+    const id = req.params.id;
 
-  const allowedFields = ["name", "points", "num_of_attempts", "deadline"];
-  const extraFields = Object.keys(req.body).filter(
-    (key) => !allowedFields.includes(key)
-  );
+    const assignment = await Assignment.findByPk(req.params.id);
+    if (!assignment) {
+      logger.error("Assignment not found.");
+      return res.status(404).json({ message: "Assignment not found." });
+    }
 
-  if (extraFields.length > 0) {
-    return res
-      .status(400)
-      .json({ msg: `Extra fields not allowed: ${extraFields.join(", ")}` });
-  } else if (name && typeof name !== "string") {
-    return res
-      .status(400)
-      .json({ msg: "Name field needs to be in String format" });
-  } else if (points && (typeof points !== "number" || points % 1 !== 0)) {
-    return res
-      .status(400)
-      .json({ msg: "Points field needs to be in integer format" });
-  } else if (
-    num_of_attempts &&
-    (typeof num_of_attempts !== "number" || num_of_attempts % 1 !== 0)
-  ) {
-    return res
-      .status(400)
-      .json({ msg: "Attempt field needs to be in integer format" });
-  } else if (deadline && !isValidDeadlineFormat(deadline)) {
-    return res.status(400).json({
-      msg: 'Invalid deadline format. Please use the format "2023-10-09T23:42:18.000Z"',
+    if (assignment.user_id !== req.user.id) {
+      logger.error("Permission denied.");
+      return res.status(403).json({ message: "Permission denied." });
+    }
+
+    logger.info("Updating assignment...");
+    await Assignment.update(
+      {
+        name: req.body.name,
+        points: req.body.points,
+        num_of_attemps: req.body.num_of_attemps,
+        deadline: req.body.deadline,
+      },
+      { where: { id: req.params.id } }
+    ).then(() => {
+      logger.info("Assignment updated successfully.");
+      res.status(200).send("updated successfully a customer with id = " + id);
     });
+  } catch (err) {
+    logger.error("Error updating assignment:", err.message);
+    res.status(400).json({ message: err.message });
   }
-
-  Assignment.update(req.body, {
-    where: {
-      id: id,
-      userId: req.userId,
-    },
-  })
-    .then((num) => {
-      if (num == 1) {
-        logger.log("info", "Assignment updated successfully");
-        res.status(204).send({
-          message: "Assignment was updated successfully.",
-        });
-      } else {
-        logger.log("error", "Error updating assignment");
-        res.status(400).send({
-          message: `Cannot update Assignment with id=${id}. Maybe Assignment was not found or req.body is empty!`,
-        });
-      }
-    })
-    .catch((err) => {
-      logger.log("error", "Error updating Assignment");
-      res.status(500).send({
-        message: "Error updating Assignment with id=" + id,
-      });
-    });
 };
-
-function isValidDeadlineFormat(deadline) {
-  const deadlineRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-  return deadlineRegex.test(deadline);
-}
 
 exports.deleteAssignment = async (req, res) => {
   logger.info("delete assignment by id delete");
