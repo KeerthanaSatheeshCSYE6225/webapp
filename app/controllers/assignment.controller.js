@@ -140,3 +140,82 @@ exports.deleteAssignment = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.submitAssignment = async (req, res) => {
+  try {
+    console.log("Submit assignment request received");
+
+    const { submission_url } = req.body;
+
+    const allowedFields = ["submission_url"];
+    const extraFields = Object.keys(req.body).filter(
+      (key) => !allowedFields.includes(key)
+    );
+
+    if (extraFields.length > 0) {
+      return res
+        .status(400)
+        .json({ msg: `Extra fields not allowed: ${extraFields.join(", ")}` });
+    } else if (!submission_url || !isValidUrl(submission_url)) {
+      return res
+        .status(400)
+        .json({
+          msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
+        });
+    }
+
+    const assignment = await Assignment.findOne({
+      where: {
+        id: req.params.id,
+        user_id: req.user.id, // Assuming user id is available in the request
+      },
+    });
+
+    if (!assignment) {
+      console.error("Assignment not found");
+      return res.status(404).json({ msg: "Assignment not found" });
+    }
+
+    if (new Date() > assignment.deadline) {
+      return res
+        .status(400)
+        .json({ msg: "Assignment deadline has passed. Submission rejected." });
+    }
+
+    const submissionCount = await Submission.count({
+      where: { assignment_id: req.params.id, user_id: req.user.id },
+    });
+
+    if (submissionCount >= assignment.num_of_attemps) {
+      return res
+        .status(400)
+        .json({ msg: "Retry limit exceeded. Submission rejected." });
+    }
+
+    const submission = await Submission.create({
+      assignment_id: req.params.id,
+      submission_url,
+      user_id: req.user.id, // Assuming you have a user_id field in Submission model
+    });
+
+    const message = {
+      url: submission_url,
+      userEmail: req.user.email, // Assuming you have the user's email in request
+      assignmentId: req.params.id,
+    };
+
+    await sns
+      .publish({
+        TopicArn: "arn:aws:sns:region:accountId:topicName", // Replace with your topic ARN
+        Message: JSON.stringify(message),
+      })
+      .promise();
+
+    console.log("Assignment submitted successfully");
+    res.status(201).send(submission);
+  } catch (error) {
+    console.error("Error submitting assignment", error);
+    res.status(400).json(error.message);
+  }
+};
+
