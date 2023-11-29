@@ -1,8 +1,12 @@
 const winston = require("winston");
 const logger = require("../logger/logger"); // Update the path to your logger file
 
+
+const AWS = require("aws-sdk");
+const sns = new AWS.SNS();
 const db = require("../models");
 const Assignment = db.assignment;
+const Submission = db.submission;
 
 exports.getAssignments = async (req, res) => {
   logger.info("fetch all assignments get");
@@ -157,17 +161,15 @@ exports.submitAssignment = async (req, res) => {
         .status(400)
         .json({ msg: `Extra fields not allowed: ${extraFields.join(", ")}` });
     } else if (!submission_url || !isValidUrl(submission_url)) {
-      return res
-        .status(400)
-        .json({
-          msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
-        });
+      return res.status(400).json({
+        msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
+      });
     }
 
     const assignment = await Assignment.findOne({
       where: {
         id: req.params.id,
-        user_id: req.user.id, // Assuming user id is available in the request
+        user_id: req.user_id, // Assuming user id is available in the request
       },
     });
 
@@ -195,7 +197,7 @@ exports.submitAssignment = async (req, res) => {
     const submission = await Submission.create({
       assignment_id: req.params.id,
       submission_url,
-      user_id: req.user.id, // Assuming you have a user_id field in Submission model
+      user_id: req.user_id, // Assuming you have a user_id field in Submission model
     });
 
     const message = {

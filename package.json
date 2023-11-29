@@ -9,6 +9,7 @@
   "author": "Keerthana",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1507.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "chai": "^4.3.10",
