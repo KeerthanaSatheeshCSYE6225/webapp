@@ -1,11 +1,13 @@
 const winston = require("winston");
 const logger = require("../logger/logger"); // Update the path to your logger file
 
+
 const AWS = require("aws-sdk");
 const sns = new AWS.SNS();
 const db = require("../models");
 const Assignment = db.assignment;
 const Submission = db.submission;
+
 const publishToSNS = require("../models/notification.model");
 
 exports.getAssignments = async (req, res) => {
@@ -168,8 +170,7 @@ exports.submitAssignment = async (req, res) => {
 
     const assignment = await Assignment.findOne({
       where: {
-        id: req.params.id,
-        user_id: req.user.id, // Assuming user id is available in the request
+        id: req.params.id
       },
     });
 
@@ -196,8 +197,8 @@ exports.submitAssignment = async (req, res) => {
 
     const submission = await Submission.create({
       assignment_id: req.params.id,
-      submission_url,
-      user_id: req.user.id, // Assuming you have a user_id field in Submission model
+      submission_url
+
     });
 
     const message = {
@@ -205,6 +206,7 @@ exports.submitAssignment = async (req, res) => {
       userEmail: req.user.email, // Assuming you have the user's email in request
       assignmentId: req.params.id,
     };
+
 
     // await sns
     //   .publish({
@@ -221,3 +223,4 @@ exports.submitAssignment = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
