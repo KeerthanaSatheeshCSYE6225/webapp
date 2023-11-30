@@ -1,12 +1,12 @@
 const winston = require("winston");
 const logger = require("../logger/logger"); // Update the path to your logger file
 
-
 const AWS = require("aws-sdk");
 const sns = new AWS.SNS();
 const db = require("../models");
 const Assignment = db.assignment;
 const Submission = db.submission;
+const publishToSNS = require("../models/notification.model");
 
 exports.getAssignments = async (req, res) => {
   logger.info("fetch all assignments get");
@@ -169,7 +169,7 @@ exports.submitAssignment = async (req, res) => {
     const assignment = await Assignment.findOne({
       where: {
         id: req.params.id,
-        user_id: req.user_id, // Assuming user id is available in the request
+        user_id: req.user.id, // Assuming user id is available in the request
       },
     });
 
@@ -197,7 +197,7 @@ exports.submitAssignment = async (req, res) => {
     const submission = await Submission.create({
       assignment_id: req.params.id,
       submission_url,
-      user_id: req.user_id, // Assuming you have a user_id field in Submission model
+      user_id: req.user.id, // Assuming you have a user_id field in Submission model
     });
 
     const message = {
@@ -206,12 +206,13 @@ exports.submitAssignment = async (req, res) => {
       assignmentId: req.params.id,
     };
 
-    await sns
-      .publish({
-        TopicArn: "arn:aws:sns:region:accountId:topicName", // Replace with your topic ARN
-        Message: JSON.stringify(message),
-      })
-      .promise();
+    // await sns
+    //   .publish({
+    //     TopicArn: "arn:aws:sns:region:accountId:topicName", // Replace with your topic ARN
+    //     Message: JSON.stringify(message),
+    //   })
+    //   .promise();
+    await publishToSNS(process.env.TOPIC_ARN, message).promise();
 
     console.log("Assignment submitted successfully");
     res.status(201).send(submission);
