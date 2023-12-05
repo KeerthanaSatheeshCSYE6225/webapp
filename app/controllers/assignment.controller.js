@@ -145,7 +145,7 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
-const submitAssignment = asyncHandler(async (req, res) => {
+const submitAssignment = async (req, res) => {
   logger.log("info", "Submit assignment request received");
   const { submission_url } = req.body.submission_url;
   const assignmentId = req.params.id;
@@ -222,4 +222,4 @@ const submitAssignment = asyncHandler(async (req, res) => {
       .status(400)
       .json({ message: error.message + "catchError submitting assignment" });
   }
-});
+};
