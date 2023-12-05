@@ -145,6 +145,7 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
+
 const submitAssignment = async (req, res) => {
   logger.log("info", "Submit assignment request received");
   const { submission_url } = req.body.submission_url;
@@ -216,6 +217,7 @@ const submitAssignment = async (req, res) => {
 
     //await publishToSNS.publishToSNS(process.env.TOPIC_ARN, message).promise();
     //res.status(201).json(submission);
+
   } catch (error) {
     logger.log("error", "Error submitting assignment");
     res
