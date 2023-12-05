@@ -145,72 +145,83 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
-exports.submitAssignment = async (req, res) => {
-  try {
-    console.log("Submit assignment request received");
 
-    const { submission_url } = req.body;
+const submitAssignment = async (req, res) => {
+  logger.log("info", "Submit assignment request received");
+  const { submission_url } = req.body.submission_url;
+  const assignmentId = req.params.id;
+  const userid = req.user.id; // Adjust this line based on how you store the authenticated user's information
+  const id = req.params.id;
 
-    const allowedFields = ["submission_url"];
-    const extraFields = Object.keys(req.body).filter(
-      (key) => !allowedFields.includes(key)
-    );
-
-    if (extraFields.length > 0) {
-      return res
-        .status(400)
-        .json({ msg: `Extra fields not allowed: ${extraFields.join(", ")}` });
-    } else if (!submission_url || !isValidUrl(submission_url)) {
-      return res.status(400).json({
-        msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
-      });
-    }
-
-    const assignment = await Assignment.findOne({
-      where: {
-        id: req.params.id
-      },
+  // Validate the submission URL
+  if (!submission_url) {
+    return res.status(400).json({
+      msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
     });
+  }
+  if (!userid) {
+    return res.status(400).json({ msg: "User id is required" });
+  }
+
+  try {
+    const assignment = await Assignment.findByPk(id);
 
     if (!assignment) {
-      console.error("Assignment not found");
-      return res.status(404).json({ msg: "Assignment not found" });
+      logger.error("Assignment not found for deletion.");
+      return res.status(404).json({ message: "Assignment not found." });
     }
 
+    if (assignment.user_id !== req.user.id) {
+      logger.error("Permission denied for deleting assignment.");
+      return res.status(403).json({ message: "Permission denied." });
+    }
+    // Check if the due date for the assignment has passed
     if (new Date() > assignment.deadline) {
       return res
         .status(400)
         .json({ msg: "Assignment deadline has passed. Submission rejected." });
     }
 
+    // Check if user has exceeded retries
     const submissionCount = await Submission.count({
-      where: { assignment_id: req.params.id, user_id: req.user.id },
+      where: { assignment_id: assignmentId, user_id: userid },
     });
-
-    if (submissionCount >= assignment.num_of_attemps) {
+    if (submissionCount >= 3) {
+      // Assuming 3 is the retry limit
       return res
         .status(400)
         .json({ msg: "Retry limit exceeded. Submission rejected." });
     }
 
     const submission = await Submission.create({
-      assignment_id: req.params.id,
-      submission_url
+      assignment_id: assignmentId,
+      submission_url,
+      user_id: userid,
     });
 
-    const message = {
-      url: submission_url,
-      userEmail: req.user.email, // Assuming you have the user's email in request
-      assignmentId: req.params.id,
-    };
+    const message = "heyyyyy";
 
+    logger.log("info", "Assignment submitted successfully");
 
-    await publishToSNS(process.env.TOPIC_ARN, message).promise();
+    publishToSNS.publishToSNS(process.env.TOPIC_ARN, message, (err, data) => {
+      if (err) {
+        console.log(process.env.TOPIC_ARN + "p1");
+        // Handle error
+        res.status(500).json({ error: "Failed to send notification" });
+      } else {
+        console.log(process.env.TOPIC_ARN + "p2");
 
-    console.log("Assignment submitted successfully");
-    res.status(201).send(submission);
+        res.status(201).json(submission);
+      }
+    });
+
+    //await publishToSNS.publishToSNS(process.env.TOPIC_ARN, message).promise();
+    //res.status(201).json(submission);
+
   } catch (error) {
-    console.error("Error submitting assignment", error);
-    res.status(400).json(error.message);
+    logger.log("error", "Error submitting assignment");
+    res
+      .status(400)
+      .json({ message: error.message + "catchError submitting assignment" });
   }
 };

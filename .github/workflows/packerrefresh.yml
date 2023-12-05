@@ -1,0 +1,90 @@
+name: Continuous Deployment
+
+on:
+  workflow_dispatch:
+
+  workflow_run:
+    workflows: ["Packer build"]
+
+    types:
+      - completed
+
+jobs:
+  update-launch-template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+
+        uses: aws-actions/configure-aws-credentials@v1
+
+        with:
+          aws-access-key-id: ${{ secrets.DEMO_AWS_ACCESS_KEY_ID }}
+
+          aws-secret-access-key: ${{ secrets.DEMO_AWS_SECRET_ACCESS_KEY }}
+
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Get Latest AMI ID
+
+        run: |
+
+          latest_ami=$(aws ec2 describe-images \
+
+            --owners 835050451967 \
+
+            --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text)
+
+          echo "Latest AMI ID: $latest_ami"
+
+          echo "::set-output name=ami_id::$latest_ami"
+
+        id: ami
+
+      - name: Update Launch Template
+
+        run: |
+
+          launch_template_name="MyLaunchTemplate-e58e46c"
+
+          ami_id="${{ steps.ami.outputs.ami_id }}"
+
+          # Create a new version of the Launch Template
+
+          aws ec2 create-launch-template-version \
+
+            --launch-template-name $launch_template_name \
+
+            --version-description "Update with latest AMI" \
+
+            --source-version "1" \
+
+            --launch-template-data "{\"ImageId\":\"$ami_id\"}"
+
+            #--launch-template-data '{"ImageId":$ami_id}'
+
+            #--launch-template-data file://updated_launch_template.json
+
+          echo "New version of Launch Template created with AMI: $ami_id"
+
+      - name: Start Instance Refresh
+
+        run: |
+
+          aws autoscaling start-instance-refresh --auto-scaling-group-name "MyAutoScalingGroup-fa0c9c1"
+
+      - name: Wait for Instance Refresh
+
+        run: |
+
+          # You may need to customize this loop based on the actual status values returned by describe-instance-refreshes.
+
+          while [[ "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name "MyAutoScalingGroup-fa0c9c1" --query 'InstanceRefreshes[0].Status' --output text)" != "Successful" ]]; do
+
+            sleep 60
+
+          done

@@ -33,6 +33,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         readOnly: true,
       },
+      user_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+      },
     },
     {
       timestamps: false, // This will prevent Sequelize from adding createdAt and updatedAt
