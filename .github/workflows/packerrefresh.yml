@@ -1,90 +1,92 @@
 name: Continuous Deployment
 
 on:
-  workflow_dispatch:
-
   workflow_run:
-    workflows: ["Packer build"]
-
+    workflows: ["Packer AMI Build"]
     types:
       - completed
+    branches:
+      - main
 
 jobs:
-  update-launch-template:
+  deploy:
     runs-on: ubuntu-latest
-
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
-      - name: Checkout Repository
-
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-
-        uses: aws-actions/configure-aws-credentials@v1
-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          aws-access-key-id: ${{ secrets.DEMO_AWS_ACCESS_KEY_ID }}
+          node-version: "16"
 
-          aws-secret-access-key: ${{ secrets.DEMO_AWS_SECRET_ACCESS_KEY }}
-
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEMO_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEMO_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Get Latest AMI ID
-
+      - name: Fetch Existing Launch Template ID
+        id: fetch-template
         run: |
-
-          latest_ami=$(aws ec2 describe-images \
-
-            --owners 835050451967 \
-
-            --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text)
-
-          echo "Latest AMI ID: $latest_ami"
-
-          echo "::set-output name=ami_id::$latest_ami"
-
-        id: ami
+          LAUNCH_TEMPLATE_ID=$(aws ec2 describe-launch-templates --query 'LaunchTemplates[0].LaunchTemplateId' --output text)
+          echo "Launch Template ID: $LAUNCH_TEMPLATE_ID"
+          echo "::set-output name=launchTemplateId::$LAUNCH_TEMPLATE_ID"
 
       - name: Update Launch Template
-
         run: |
+          LAUNCH_TEMPLATE_ID=${{ steps.fetch-template.outputs.launchTemplateId }}
+          AMI_ID=$(aws ec2 describe-images --owners ${{ secrets.ACCOUNT_ID }} --filters 'Name=state,Values=available' --query 'sort_by(Images, &CreationDate)[-1].ImageId' --output text)
+          echo "AMI ID: $AMI_ID"
 
-          launch_template_name="MyLaunchTemplate-e58e46c"
+          aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE_ID --source-version $(aws ec2 describe-launch-template-versions --launch-template-id $LAUNCH_TEMPLATE_ID --query 'LaunchTemplateVersions[-1:].VersionNumber' --output text) --launch-template-data '{"ImageId":"'$AMI_ID'"}'
 
-          ami_id="${{ steps.ami.outputs.ami_id }}"
+          VERSION=$(aws ec2 describe-launch-templates --launch-template-ids $LAUNCH_TEMPLATE_ID --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
+          echo "New Version: $VERSION"
+          echo "LAUNCH_TEMPLATE_ID=$LAUNCH_TEMPLATE_ID" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          # Create a new version of the Launch Template
-
-          aws ec2 create-launch-template-version \
-
-            --launch-template-name $launch_template_name \
-
-            --version-description "Update with latest AMI" \
-
-            --source-version "1" \
-
-            --launch-template-data "{\"ImageId\":\"$ami_id\"}"
-
-            #--launch-template-data '{"ImageId":$ami_id}'
-
-            #--launch-template-data file://updated_launch_template.json
-
-          echo "New version of Launch Template created with AMI: $ami_id"
-
-      - name: Start Instance Refresh
-
+      - name: Fetch Existing Auto Scaling Group Names
+        id: fetch-asg-names
         run: |
+          ASG_NAMES=$(aws autoscaling describe-auto-scaling-groups --query 'AutoScalingGroups[*].AutoScalingGroupName' --output text)
+          echo "Auto Scaling Group Names: $ASG_NAMES"
+          echo "::set-output name=asgNames::$ASG_NAMES"
 
-          aws autoscaling start-instance-refresh --auto-scaling-group-name "MyAutoScalingGroup-fa0c9c1"
-
-      - name: Wait for Instance Refresh
-
+      - name: Update Auto Scaling Groups to New Launch Template Version
         run: |
+          for ASG_NAME in ${{ steps.fetch-asg-names.outputs.asgNames }}
+          do
+            echo "Updating Auto Scaling Group: $ASG_NAME"
+            aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --launch-template "LaunchTemplateId=${{ env.LAUNCH_TEMPLATE_ID }},Version=${{ env.VERSION }}"
+          done
 
-          # You may need to customize this loop based on the actual status values returned by describe-instance-refreshes.
+      - name: Issue instance refresh
+        run: |
+          for ASG_NAME in ${{ steps.fetch-asg-names.outputs.asgNames }}
+          do
+            echo "Starting instance refresh for: $ASG_NAME"
+            aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME
 
-          while [[ "$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name "MyAutoScalingGroup-fa0c9c1" --query 'InstanceRefreshes[0].Status' --output text)" != "Successful" ]]; do
+            while true; do
+              # Fetch the latest instance refresh status
+              STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $ASG_NAME --query 'InstanceRefreshes[0].Status' --output text)
+              PERCENTAGE=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $ASG_NAME --query 'InstanceRefreshes[0].PercentageComplete' --output text)
+              
+              echo "Current status: $STATUS, Percentage Complete: $PERCENTAGE%"
 
-            sleep 60
-
+              # Check if the refresh is successful and 100% complete
+              if [[ $STATUS == "Successful" && $PERCENTAGE == 100 ]]; then
+                echo "Instance refresh for $ASG_NAME completed successfully."
+                break
+              elif [[ $STATUS == "Failed" || $STATUS == "Cancelled" ]]; then
+                echo "Instance refresh for $ASG_NAME failed or was cancelled."
+                exit 1
+              else
+                echo "Instance refresh for $ASG_NAME is still in progress..."
+                sleep 30
+              fi
+            done
           done

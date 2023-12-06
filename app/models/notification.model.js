@@ -1,6 +1,4 @@
 const AWS = require("aws-sdk");
-//const dotenv = require('dotenv');
-//dotenv.config();
 
 AWS.config.update({
   region: "us-east-1",
@@ -8,7 +6,7 @@ AWS.config.update({
 
 const sns = new AWS.SNS();
 
-const publishToSNS = (topicArn, message, callback) => {
+module.exports = (topicArn, message, callback) => {
   const params = {
     Message: message,
     TopicArn: topicArn,
@@ -24,5 +22,3 @@ const publishToSNS = (topicArn, message, callback) => {
     }
   });
 };
-
-module.exports = { publishToSNS };

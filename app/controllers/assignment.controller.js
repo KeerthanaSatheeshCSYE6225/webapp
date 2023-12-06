@@ -145,35 +145,36 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
-const submitAssignment = async (req, res) => {
-  logger.log("info", "Submit assignment request received");
-  const { submission_url } = req.body.submission_url;
-  const assignmentId = req.params.id;
-  const userid = req.user.id; // Adjust this line based on how you store the authenticated user's information
-  const id = req.params.id;
-
-  // Validate the submission URL
-  if (!submission_url) {
-    return res.status(400).json({
-      msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
-    });
-  }
-  if (!userid) {
-    return res.status(400).json({ msg: "User id is required" });
-  }
-
+exports.submitAssignment = async (req, res) => {
   try {
-    const assignment = await Assignment.findByPk(id);
+    logger.log("info", "Submit assignment request received");
+
+    const { submission_url } = req.body;
+    const assignmentId = req.params.id;
+    const userid = req.user.id; 
+
+    // Validate the submission URL
+    if (!submission_url) {
+      return res.status(400).json({
+        msg: 'Invalid submission URL format. Please use the format "https://www.example.com"',
+      });
+    }
+    if (!userid) {
+      return res.status(400).json({ msg: "User id is required" });
+    }
+
+    const assignment = await Assignment.findByPk(assignmentId);
 
     if (!assignment) {
-      logger.error("Assignment not found for deletion.");
+      logger.error("Assignment not found for submission.");
       return res.status(404).json({ message: "Assignment not found." });
     }
 
     if (assignment.user_id !== req.user.id) {
-      logger.error("Permission denied for deleting assignment.");
+      logger.error("Permission denied for submitting assignment.");
       return res.status(403).json({ message: "Permission denied." });
     }
+
     // Check if the due date for the assignment has passed
     if (new Date() > assignment.deadline) {
       return res
@@ -198,28 +199,22 @@ const submitAssignment = async (req, res) => {
       user_id: userid,
     });
 
-    const message = "heyyyyy";
+    const message = "Assignment submitted successfully";
 
     logger.log("info", "Assignment submitted successfully");
 
     publishToSNS.publishToSNS(process.env.TOPIC_ARN, message, (err, data) => {
       if (err) {
-        console.log(process.env.TOPIC_ARN + "p1");
-        // Handle error
-        res.status(500).json({ error: "Failed to send notification" });
+        logger.error("Failed to send notification");
+        return res.status(500).json({ error: "Failed to send notification" });
       } else {
-        console.log(process.env.TOPIC_ARN + "p2");
-
         res.status(201).json(submission);
       }
     });
-
-    //await publishToSNS.publishToSNS(process.env.TOPIC_ARN, message).promise();
-    //res.status(201).json(submission);
   } catch (error) {
-    logger.log("error", "Error submitting assignment");
+    logger.error("Error submitting assignment: ", error.message);
     res
       .status(400)
-      .json({ message: error.message + "catchError submitting assignment" });
+      .json({ message: "Error submitting assignment: " + error.message });
   }
 };
