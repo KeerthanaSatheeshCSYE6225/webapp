@@ -2,7 +2,8 @@ name: Packer AMI Build
 
 on:
   pull_request:
-    types: [closed]
+    branches:
+      - main
 
 jobs:
   packer-ami-build:
