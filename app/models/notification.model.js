@@ -29,4 +29,3 @@ exports.publishToSNS = (topicArn, message, callback) => {
     }
   });
 };
-
