@@ -2,9 +2,9 @@ const AWS = require("aws-sdk");
 
 AWS.config.update({
   region: "us-east-1",
+  accessKeyId: "AKIAQDR62YUDBT5EF7ND",
+  secretAccessKey: "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",
 });
-
-const sns = new AWS.SNS();
 
 module.exports = (topicArn, message, callback) => {
   const params = {
