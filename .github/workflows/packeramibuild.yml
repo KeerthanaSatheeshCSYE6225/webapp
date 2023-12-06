@@ -6,7 +6,7 @@ on:
 jobs:
   packer-ami-build:
     name: Packer AMI Build
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     env:
