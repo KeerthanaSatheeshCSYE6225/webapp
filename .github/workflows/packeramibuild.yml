@@ -1,12 +1,13 @@
 name: Packer AMI Build
 on:
   pull_request:
-    types: [closed]
+    branches:
+      - main
 
 jobs:
   packer-ami-build:
     name: Packer AMI Build
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     env:
@@ -43,6 +44,7 @@ jobs:
           echo DIALECT=${{ secrets.DIALECT }} >> .env
           echo USER=${{ secrets.USER }} >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+          echo TOPIC_ARN=${{ secrets.TOPIC_ARN }} >> .env
           cat .env
 
       - name: Configure AWS Credentials
