@@ -198,12 +198,13 @@ exports.submitAssignment = async (req, res) => {
       submission_url: req.body.submission_url,
       user_id: userid,
     });
-
+    console.log(req.user);
     const message = {
       url: submission_url,
-      userEmail: username, // Adjust as per your context
+      userEmail: req.user.email, // Adjust as per your context
       assignmentId: assignmentId,
     };
+    console.log(message);
 
     logger.log("info", "Assignment submitted successfully");
 
