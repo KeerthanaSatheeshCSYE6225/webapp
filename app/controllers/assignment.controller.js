@@ -151,7 +151,7 @@ exports.submitAssignment = async (req, res) => {
 
     const { submission_url } = req.body;
     const assignmentId = req.params.id;
-    const userid = req.user.id; 
+    const userid = req.user.id;
 
     // Validate the submission URL
     if (!submission_url) {
@@ -199,7 +199,11 @@ exports.submitAssignment = async (req, res) => {
       user_id: userid,
     });
 
-    const message = "Assignment submitted successfully";
+    const message = {
+      url: submission_url,
+      userEmail: username, // Adjust as per your context
+      assignmentId: assignmentId,
+    };
 
     logger.log("info", "Assignment submitted successfully");
 

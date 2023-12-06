@@ -15,7 +15,7 @@ const sns = new AWS.SNS({
 
 exports.publishToSNS = (topicArn, message, callback) => {
   const params = {
-    Message: message,
+    Message: JSON.stringify(message),
     TopicArn: topicArn,
   };
 
