@@ -53,8 +53,61 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Run Packer build
+      - name: Packer Install
         run: |
           cd ./packer
           packer init .
-          packer build ./ami.pkr.hcl
+
+      - name: Build AMI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_EC2 }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_EC2 }}
+        run: |
+          AMI_ID=$(packer build -machine-readable ./packer/ami.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
+          echo "AMI ID: $AMI_ID"
+          echo "AMI_ID=${AMI_ID}" >> $GITHUB_ENV
+
+      - name: Created AMI
+        run: |
+          full_ami_id="${{ env.AMI_ID }}"
+          region=$(echo $full_ami_id | cut -d':' -f1)
+          ami_id=$(echo $full_ami_id | cut -d':' -f2)
+          echo "Created AMI in region $region with AMI ID $ami_id"
+          echo "AMI_REGION=$region" >> $GITHUB_ENV
+          echo "AMI_ID=$ami_id" >> $GITHUB_ENV
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEMO_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEMO_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update Launch Template
+        run: |
+          aws ec2 create-launch-template-version \
+            --launch-template-id $(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text) \
+            --version-description WebVersion2 \
+            --source-version 1 \
+            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
+          echo "Latest Launch Template Version: $latest_version"
+          echo "LATEST_LAUNCH_TEMPLATE_VERSION=$latest_version" >> $GITHUB_ENV
+
+      - name: Update Auto scalling
+        run: |
+          latest_version=$(aws ec2 describe-launch-templates --launch-template-ids $launch_template_id --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
+          LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
+          autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
+          echo "Launch Template Version: $latest_version"
+          echo "Autoscale version: $autoscaling_group"
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name $autoscaling_group \
+            --launch-template LaunchTemplateId=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text),Version=$latest_version
+
+      - name: Instant Refresh
+        run: |
+          LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
+          autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
+          echo "Autoscale version: $autoscaling_group"
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name $autoscaling_group
