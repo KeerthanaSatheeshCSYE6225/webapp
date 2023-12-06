@@ -13,5 +13,5 @@ db.sequelize = sequelize;
 
 db.account = require("./account.model.js")(sequelize, Sequelize);
 db.assignment = require("./assignment.model.js")(sequelize, Sequelize);
-db.submission = require("./submission.model")(sequelize, Sequelize);
+db.submission = require("./submission.model.js")(sequelize, Sequelize);
 module.exports = db;
