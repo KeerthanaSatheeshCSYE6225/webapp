@@ -62,3 +62,88 @@ info: This is an informational message. {"timestamp":"2023-11-29T23:20:16.114Z"}
 error: This is an error message. {"timestamp":"2023-11-29T23:20:16.115Z"}
 info: This is an informational message. {"timestamp":"2023-11-30T00:02:21.606Z"}
 error: This is an error message. {"timestamp":"2023-11-30T00:02:21.607Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T08:56:12.294Z"}
+error: This is an error message. {"timestamp":"2023-12-06T08:56:12.295Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T08:57:32.195Z"}
+error: This is an error message. {"timestamp":"2023-12-06T08:57:32.196Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T08:58:01.703Z"}
+error: This is an error message. {"timestamp":"2023-12-06T08:58:01.704Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T08:58:44.379Z"}
+error: This is an error message. {"timestamp":"2023-12-06T08:58:44.380Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T08:59:04.359Z"}
+error: This is an error message. {"timestamp":"2023-12-06T08:59:04.360Z"}
+info: Assignment created successfully. {"timestamp":"2023-12-06T08:59:55.478Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:00:25.680Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:01:26.689Z"}
+error: Error creating assignment: {"timestamp":"2023-12-06T09:02:33.766Z"}
+info: Assignment created successfully. {"timestamp":"2023-12-06T09:02:53.477Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:03:05.527Z"}
+error: Error submitting assignment:  {"timestamp":"2023-12-06T09:03:05.534Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:05:12.847Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:05:12.848Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:05:17.341Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:05:17.352Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:05:17.581Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:06:50.570Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:06:50.571Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:06:53.043Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:06:53.053Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:06:53.271Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:07:19.749Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:07:19.749Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:07:21.519Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:07:21.528Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:07:21.727Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:09:24.704Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:09:24.705Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:09:29.189Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:09:29.199Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:09:29.454Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:14:55.509Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:14:55.510Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:15:00.214Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:15:00.225Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:15:00.487Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:15:13.027Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:15:13.033Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T09:15:13.202Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:16:26.905Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:16:26.905Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:16:39.823Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:16:39.834Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T09:22:47.094Z"}
+error: This is an error message. {"timestamp":"2023-12-06T09:22:47.095Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:22:53.555Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:22:53.565Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T09:27:17.565Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T09:27:17.574Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T15:53:47.976Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T15:53:47.989Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T16:01:30.343Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T16:01:30.354Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T16:05:25.103Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T16:05:25.117Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T19:11:28.691Z"}
+error: This is an error message. {"timestamp":"2023-12-06T19:11:28.692Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T19:31:41.804Z"}
+error: This is an error message. {"timestamp":"2023-12-06T19:31:41.805Z"}
+info: Assignment created successfully. {"timestamp":"2023-12-06T19:32:06.706Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T19:32:22.106Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T19:32:22.118Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T19:32:22.464Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T19:33:38.930Z"}
+error: This is an error message. {"timestamp":"2023-12-06T19:33:38.931Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T19:34:04.896Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T19:34:04.944Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T19:34:05.158Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T19:34:07.198Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T19:34:07.206Z"}
+error: Failed to send notification {"timestamp":"2023-12-06T19:34:07.400Z"}
+info: This is an informational message. {"timestamp":"2023-12-06T19:34:24.732Z"}
+error: This is an error message. {"timestamp":"2023-12-06T19:34:24.733Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T19:34:27.864Z"}
+error: Exceeded the number of submission attempts {"timestamp":"2023-12-06T19:34:27.870Z"}
+info: Assignment created successfully. {"timestamp":"2023-12-06T19:34:46.633Z"}
+info: Submit assignment request received {"timestamp":"2023-12-06T19:34:57.416Z"}
+info: Assignment submitted successfully {"timestamp":"2023-12-06T19:34:57.424Z"}
+
