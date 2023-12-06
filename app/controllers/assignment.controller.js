@@ -182,16 +182,16 @@ exports.submitAssignment = async (req, res) => {
         .json({ msg: "Assignment deadline has passed. Submission rejected." });
     }
 
-    // Check if user has exceeded retries
-    const submissionCount = await Submission.count({
-      where: { assignment_id: assignmentId, user_id: userid },
-    });
-    if (submissionCount >= 3) {
-      // Assuming 3 is the retry limit
-      return res
-        .status(400)
-        .json({ msg: "Retry limit exceeded. Submission rejected." });
-    }
+    // // Check if user has exceeded retries
+    // const submissionCount = await Submission.count({
+    //   where: { assignment_id: assignmentId, user_id: userid },
+    // });
+    // if (submissionCount >= 3) {
+    //   // Assuming 3 is the retry limit
+    //   return res
+    //     .status(400)
+    //     .json({ msg: "Retry limit exceeded. Submission rejected." });
+    // }
 
     const submission = await Submission.create({
       assignment_id: assignmentId,
