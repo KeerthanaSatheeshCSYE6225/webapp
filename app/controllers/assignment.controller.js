@@ -149,7 +149,7 @@ exports.submitAssignment = async (req, res) => {
   try {
     logger.log("info", "Submit assignment request received");
 
-    const { submission_url } = req.body;
+    const submission_url = req.body.submission_url;
     const assignmentId = req.params.id;
     const userid = req.user.id;
 
@@ -195,7 +195,7 @@ exports.submitAssignment = async (req, res) => {
 
     const submission = await Submission.create({
       assignment_id: assignmentId,
-      submission_url,
+      submission_url: req.body.submission_url,
       user_id: userid,
     });
 
