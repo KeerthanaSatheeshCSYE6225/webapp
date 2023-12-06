@@ -3,7 +3,7 @@ module.exports = (app) => {
   const { basicAuth } = require("../middleware/authenticateToken");
 
   //app.use(basicAuth);
-  app.get("/v2/assignments", basicAuth, async (req, res) => {
+  app.get("/v3/assignments", basicAuth, async (req, res) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
@@ -13,29 +13,29 @@ module.exports = (app) => {
     assignmentController.getAssignments(req, res);
   });
 
-  app.get("/v2/assignments/:id", basicAuth, async (req, res) => {
+  app.get("/v3/assignments/:id", basicAuth, async (req, res) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
     assignmentController.findById(req, res);
   });
 
-  app.post("/v2/assignments", basicAuth, async (req, res) => {
+  app.post("/v3/assignments", basicAuth, async (req, res) => {
     assignmentController.createAssignment(req, res);
   });
 
-  app.put("/v2/assignments/:id", basicAuth, async (req, res) => {
+  app.put("/v3/assignments/:id", basicAuth, async (req, res) => {
     assignmentController.updateAssignment(req, res);
   });
 
-  app.delete("/v2/assignments/:id", basicAuth, async (req, res) => {
+  app.delete("/v3/assignments/:id", basicAuth, async (req, res) => {
     if (Object.keys(req.body).length > 0) {
       return res.status(400).send("Payload not allowed");
     }
     assignmentController.deleteAssignment(req, res);
   });
   // New route for submission
-  app.post("/v2/assignments/:id/submissions", basicAuth, async (req, res) => {
+  app.post("/v3/assignments/:id/submissions", basicAuth, async (req, res) => {
     assignmentController.submitAssignment(req, res);
   });
 };
