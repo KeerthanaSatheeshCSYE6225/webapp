@@ -146,4 +146,5 @@ error: Exceeded the number of submission attempts {"timestamp":"2023-12-06T19:34
 info: Assignment created successfully. {"timestamp":"2023-12-06T19:34:46.633Z"}
 info: Submit assignment request received {"timestamp":"2023-12-06T19:34:57.416Z"}
 info: Assignment submitted successfully {"timestamp":"2023-12-06T19:34:57.424Z"}
-
+info: This is an informational message. {"timestamp":"2023-12-06T21:35:59.442Z"}
+error: This is an error message. {"timestamp":"2023-12-06T21:35:59.443Z"}
