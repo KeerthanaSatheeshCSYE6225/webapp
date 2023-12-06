@@ -182,6 +182,17 @@ exports.submitAssignment = async (req, res) => {
         .json({ msg: "Assignment deadline has passed. Submission rejected." });
     }
 
+    // Fetch previous submissions for the assignment by the user
+    const old_submissions = await Submission.findAll({
+      where: { assignment_id: assignmentId, user_id: userid },
+    });
+
+    // Compare the number of previous submissions with the allowed attempts
+    if (old_submissions.length >= assignment.num_of_attemps) {
+      logger.error('Exceeded the number of submission attempts');
+      return res.status(403).json({ message: 'Exceeded the number of submission attempts' });
+    }
+
     // // Check if user has exceeded retries
     // const submissionCount = await Submission.count({
     //   where: { assignment_id: assignmentId, user_id: userid },
