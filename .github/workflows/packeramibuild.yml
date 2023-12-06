@@ -60,8 +60,8 @@ jobs:
 
       - name: Build AMI
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_EC2 }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_EC2 }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           AMI_ID=$(packer build -machine-readable ./packer/ami.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
           echo "AMI ID: $AMI_ID"
