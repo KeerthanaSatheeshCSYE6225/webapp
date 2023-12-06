@@ -36,6 +36,6 @@ module.exports = (app) => {
   });
   // New route for submission
   app.post("/v1/assignments/:id/submissions", basicAuth, async (req, res) => {
-    assignmentController.createSubmission(req, res);
+    assignmentController.submitAssignment(req, res);
   });
 };
