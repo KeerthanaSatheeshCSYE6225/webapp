@@ -6,7 +6,7 @@ on:
 jobs:
   packer-ami-build:
     name: Packer AMI Build
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     env:
@@ -82,31 +82,94 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_DEMO_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      # - name: Update Launch Template
+      #   run: |
+      #     aws ec2 create-launch-template-version \
+      #       --launch-template-id $(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text) \
+      #       --version-description WebVersion2 \
+      #       --source-version 1 \
+      #       --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
+      #     echo "Latest Launch Template Version: $latest_version"
+      #     echo "LATEST_LAUNCH_TEMPLATE_VERSION=$latest_version" >> $GITHUB_ENV
+
+      # - name: Update Auto scalling
+      #   run: |
+      #     latest_version=$(aws ec2 describe-launch-templates --launch-template-ids $launch_template_id --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
+      #     LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
+      #     autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
+      #     echo "Launch Template Version: $latest_version"
+      #     echo "Autoscale version: $autoscaling_group"
+      #     aws autoscaling update-auto-scaling-group \
+      #       --auto-scaling-group-name $autoscaling_group \
+      #       --launch-template LaunchTemplateId=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text),Version=$latest_version
+
+      # - name: Instant Refresh
+      #   run: |
+      #     LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
+      #     autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
+      #     echo "Autoscale version: $autoscaling_group"
+      #     aws autoscaling start-instance-refresh \
+      #       --auto-scaling-group-name $autoscaling_group
+
+      - name: Fetch Existing Launch Template ID
+        id: fetch-template
+        run: |
+          LAUNCH_TEMPLATE_ID=$(aws ec2 describe-launch-templates --query 'LaunchTemplates[0].LaunchTemplateId' --output text)
+          echo "Launch Template ID: $LAUNCH_TEMPLATE_ID"
+          echo "::set-output name=launchTemplateId::$LAUNCH_TEMPLATE_ID"
+
       - name: Update Launch Template
         run: |
-          aws ec2 create-launch-template-version \
-            --launch-template-id $(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text) \
-            --version-description WebVersion2 \
-            --source-version 1 \
-            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
-          echo "Latest Launch Template Version: $latest_version"
-          echo "LATEST_LAUNCH_TEMPLATE_VERSION=$latest_version" >> $GITHUB_ENV
+          LAUNCH_TEMPLATE_ID=${{ steps.fetch-template.outputs.launchTemplateId }}
+          AMI_ID=$(aws ec2 describe-images --owners ${{ secrets.ACCOUNT_ID }} --filters 'Name=state,Values=available' --query 'sort_by(Images, &CreationDate)[-1].ImageId' --output text)
+          echo "AMI ID: $AMI_ID"
 
-      - name: Update Auto scalling
-        run: |
-          latest_version=$(aws ec2 describe-launch-templates --launch-template-ids $launch_template_id --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
-          LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
-          autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
-          echo "Launch Template Version: $latest_version"
-          echo "Autoscale version: $autoscaling_group"
-          aws autoscaling update-auto-scaling-group \
-            --auto-scaling-group-name $autoscaling_group \
-            --launch-template LaunchTemplateId=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text),Version=$latest_version
+          aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE_ID --source-version $(aws ec2 describe-launch-template-versions --launch-template-id $LAUNCH_TEMPLATE_ID --query 'LaunchTemplateVersions[-1:].VersionNumber' --output text) --launch-template-data '{"ImageId":"'$AMI_ID'"}'
 
-      - name: Instant Refresh
+          VERSION=$(aws ec2 describe-launch-templates --launch-template-ids $LAUNCH_TEMPLATE_ID --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
+          echo "New Version: $VERSION"
+          echo "LAUNCH_TEMPLATE_ID=$LAUNCH_TEMPLATE_ID" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Fetch Existing Auto Scaling Group Names
+        id: fetch-asg-names
         run: |
-          LT_NAME=$(aws ec2 describe-launch-templates --query 'LaunchTemplates | sort_by(@, &CreateTime) | [-1].LaunchTemplateId' --output text)
-          autoscaling_group=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?contains(LaunchTemplate.LaunchTemplateName, '${launch_template_id}')].AutoScalingGroupName" --output text)
-          echo "Autoscale version: $autoscaling_group"
-          aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name $autoscaling_group
+          ASG_NAMES=$(aws autoscaling describe-auto-scaling-groups --query 'AutoScalingGroups[*].AutoScalingGroupName' --output text)
+          echo "Auto Scaling Group Names: $ASG_NAMES"
+          echo "::set-output name=asgNames::$ASG_NAMES"
+
+      - name: Update Auto Scaling Groups to New Launch Template Version
+        run: |
+          for ASG_NAME in ${{ steps.fetch-asg-names.outputs.asgNames }}
+          do
+            echo "Updating Auto Scaling Group: $ASG_NAME"
+            aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --launch-template "LaunchTemplateId=${{ env.LAUNCH_TEMPLATE_ID }},Version=${{ env.VERSION }}"
+          done
+
+      - name: Issue instance refresh
+        run: |
+          for ASG_NAME in ${{ steps.fetch-asg-names.outputs.asgNames }}
+          do
+            echo "Starting instance refresh for: $ASG_NAME"
+            aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME
+
+            while true; do
+              # Fetch the latest instance refresh status
+              STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $ASG_NAME --query 'InstanceRefreshes[0].Status' --output text)
+              PERCENTAGE=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $ASG_NAME --query 'InstanceRefreshes[0].PercentageComplete' --output text)
+              
+              echo "Current status: $STATUS, Percentage Complete: $PERCENTAGE%"
+
+              # Check if the refresh is successful and 100% complete
+              if [[ $STATUS == "Successful" && $PERCENTAGE == 100 ]]; then
+                echo "Instance refresh for $ASG_NAME completed successfully."
+                break
+              elif [[ $STATUS == "Failed" || $STATUS == "Cancelled" ]]; then
+                echo "Instance refresh for $ASG_NAME failed or was cancelled."
+                exit 1
+              else
+                echo "Instance refresh for $ASG_NAME is still in progress..."
+                sleep 30
+              fi
+            done
+          done
